@@ -1,0 +1,13 @@
+.input_component {
+  height: 44px;
+  background: transparent;
+  border-color: #808080;
+  input {
+    background: transparent;
+  }
+  border-radius: 0;
+}
+
+textarea.input_component {
+  min-height: 44px !important;
+}

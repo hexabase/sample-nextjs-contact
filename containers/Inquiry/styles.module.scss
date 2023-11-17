@@ -1,0 +1,24 @@
+.create_inquiry_form {
+  :global {
+    .btn {
+      padding: 8px 16px;
+      border: 2px solid;
+      height: auto;
+      min-width: 120px;
+    }
+
+    .btn.cancel {
+      border-color: #8C8C8C;
+    }
+
+    .btn.submit {
+      &:hover {
+        background-color: #fff;
+      }
+
+      border-color: #477CA5;
+      background-color: #477CA5;
+      color: #fff;
+    }
+  }
+}

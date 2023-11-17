@@ -1,0 +1,31 @@
+.modal {
+  .btnCancel {
+    display: flex;
+    width: 100px;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border-radius: 4px;
+    color: #1a1a1a;
+    border-color: #1a1a1a;
+    &:hover {
+      color: #1a1a1a !important;
+      border-color: #1a1a1a !important;
+    }
+  }
+  .btnOk {
+    width: 100px;
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+    justify-content: center;
+    background-color: #c4554d;
+    color: #fff;
+    border-color: #c4554d;
+    &:hover {
+      color: #fff !important;
+      background-color: #c4554d !important;
+      border-color: #c4554d !important;
+    }
+  }
+}

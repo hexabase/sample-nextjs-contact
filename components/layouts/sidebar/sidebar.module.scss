@@ -1,0 +1,22 @@
+.side_bar {
+  height: 100vh;
+  background: #32303b;
+  padding: 20px 0 20px 20px;
+  box-shadow: 0px 8px 16px rgba(141, 160, 208, 0.12);
+  // & > div > ul > li:has(.ant-menu-item-only-child) {
+  //   color: red;
+  // }
+}
+
+.sidebar_content {
+  max-height: calc(100vh - 166px);
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+    outline: 1px solid slategrey;
+  }
+}

@@ -1,0 +1,42 @@
+.button {
+  position: relative;
+  text-align: center;
+  padding: 10px 30px;
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:disabled,
+  [disabled] {
+    cursor: not-allowed;
+  }
+
+  &--default {
+    background: #e2e8f0;
+    color: #0f1a2a;
+  }
+
+  &--primary {
+    background: #1890ff;
+    color: #fff;
+  }
+
+  &--out-line {
+    background: transparent;
+    color: #808080;
+    border: 1px solid #808080;
+  }
+
+  &--warning-out-line {
+    background: #f6f8fc;
+    border: 1px solid #ff4d4f;
+    color: #ff4d4f;
+  }
+
+  &:focus,
+  &:active,
+  &:hover {
+    outline: none;
+    box-shadow: none;
+  }
+}
