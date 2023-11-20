@@ -4,7 +4,7 @@ import type {NextPageWithLayout} from "@/pages/_app";
 import type {InferGetServerSidePropsType} from "next";
 import {GetServerSideProps} from "next";
 import {ReactElement} from "react";
-import HomeContainer from "@/containers/home";
+import HomeContainer from "@/containers/TopPage";
 
 const HomePage: NextPageWithLayout<InferGetServerSidePropsType<typeof getServerSideProps>> = ({}) => {
   return <HomeContainer/>;
