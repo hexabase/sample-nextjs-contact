@@ -1,14 +1,11 @@
 import { FC, useEffect, useState } from "react";
-import cx from "classnames";
-import styles from "./styles.module.scss";
 import { useTopBarStore } from "@/hooks/useTopBar";
 import { DEFAULT_PARAM_SEARCH, PARAM_TOP_BAR_TITLE } from "@/common/constants/params";
-import CustomTable from "@/components/tables";
+import TableComponent from "@/components/CommonTable";
 import type { ColumnsType } from "antd/es/table";
 import { homPagePayloadDataType, TopPageDataType } from "@/common/param-types";
 import { TOP_PAGE_NAME_SPACES } from "@/common/constants/namespaces";
-import { DatePicker, Select, Spin, Tooltip } from "antd";
-import { AiOutlineSearch } from "react-icons/ai";
+import { Tooltip } from "antd";
 import { APP_ROUTES } from "@/common/constants/routes";
 import { useQuery } from "@tanstack/react-query";
 import { customersServiceApi } from "@/services/customer-service";
@@ -16,6 +13,7 @@ import { formatTime } from "@/utils";
 import { SPLASH_REVERSED_DATE_FORMAT } from "@/common/constants/dateFormat";
 import { useCustomerIdStore } from "@/hooks/useCustomerId";
 import { useRouter } from "next/router";
+import TopPageFilterComponent from "@/components/CommonTable/Filter/TopPageFilter";
 
 const HomeContainer: FC = () => {
   // set title topBar
@@ -29,9 +27,8 @@ const HomeContainer: FC = () => {
   const [tableData, setTableData] = useState<any>();
   const { setGlobalCustomerId } = useCustomerIdStore();
 
-  const [loading, setLoading] = useState<boolean>(true);
-  const [searchDate, setSearchDate] = useState("");
-  const [searchCompanyId, setSearchCompanyId] = useState("");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoadingDropdown, setIsLoadingDropdown] = useState<boolean>(true);
   const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
 
   const [pagination, setPagination] = useState({
@@ -48,46 +45,12 @@ const HomeContainer: FC = () => {
   });
 
   useEffect(() => {
-    setLoading(true);
+    setIsLoading(true);
     getListCustomer(payloadGet).then(r => {
       setTableData(r);
-      setLoading(false);
+      setIsLoading(false);
     });
   }, [payloadGet]);
-
-  useEffect(() => {
-    const tempPagination = { ...pagination };
-    tempPagination.total = tableData?.totalItems;
-    setPagination(tempPagination);
-  }, [tableData]);
-
-  const setPage = (page: number) => {
-    const tempPagination = { ...pagination };
-    tempPagination.page = page;
-    setPayloadGet({
-      ...payloadGet,
-      page: page
-    })
-    setPagination(tempPagination);
-  };
-
-  const setLimit = (limit: number) => {
-    const tempPagination = { ...pagination };
-    tempPagination.limit = limit;
-    setPagination(tempPagination);
-  };
-
-  const handleChangeCompanyName = (value: string) => {
-    setSearchCompanyId(value);
-  };
-
-  const handleChangeUpdatedAt = (value: any) => {
-    setSearchDate(value);
-  };
-
-  // Filter `option.label` match the user type `input`
-  const filterOption = (input: string, option?: { label: string; value: string }) =>
-    (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
 
   const dropdownPayload = {
     "page": DEFAULT_PARAM_SEARCH.page,
@@ -108,6 +71,7 @@ const HomeContainer: FC = () => {
       });
     });
     setDropdownOptions(options);
+    setIsLoadingDropdown(false);
   };
 
   useQuery({
@@ -115,34 +79,6 @@ const HomeContainer: FC = () => {
     queryFn: () => getListCustomer(dropdownPayload),
     onSuccess: (data) => setDropdownData(data)
   });
-
-  const handleSubmit = () => {
-    const conditions = [];
-    if (searchCompanyId) {
-      conditions.push(
-        {
-          "conditions": [
-            { "id": "id", "search_value": [`${searchCompanyId}`] }
-          ]
-        }
-      );
-    }
-    if (searchDate) {
-      conditions.push(
-        {
-          "conditions": [
-            { "id": "updated_at", "search_value": [`${searchDate}`] }
-          ]
-        }
-      );
-    }
-    // @ts-ignore
-    setPayloadGet({
-      ...payloadGet,
-      conditions: conditions,
-      use_or_condition: false
-    });
-  };
 
   const columns: ColumnsType<TopPageDataType> = [
     {
@@ -153,7 +89,11 @@ const HomeContainer: FC = () => {
       sorter: (a: any, b: any) => a?.[TOP_PAGE_NAME_SPACES.ID.dataIndex].localeCompare(b?.[TOP_PAGE_NAME_SPACES.ID.dataIndex]),
       ellipsis: true,
       width: "12.5%",
-      render: (text) => (<span className="flex justify-center w-full">{text}</span>)
+      render: (text, record) => (
+        <button className="w-full text-center" onClick={() => onClickRow(record)}>
+          {text}
+        </button>
+      )
     },
     {
       title: TOP_PAGE_NAME_SPACES.COMPANY_NAME.title,
@@ -165,13 +105,7 @@ const HomeContainer: FC = () => {
       width: "12.5%",
       render: (text, record) => (
         <Tooltip title={text}>
-          <button onClick={() => onClickRow(record)} style={{
-            maxWidth: "100%",
-            display: "block",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap"
-          }}>
+          <button onClick={() => onClickRow(record)}>
             {text}
           </button>
         </Tooltip>
@@ -250,46 +184,22 @@ const HomeContainer: FC = () => {
 
   return (
     <>
-      <div className={cx(styles.home_wrapper)}>
-        <div className="table-list">
-          <div className="flex justify-start items-center mb-5 gap-3">
-            <Select
-              showSearch
-              optionFilterProp="children"
-              style={{ width: "20%" }}
-              placeholder={TOP_PAGE_NAME_SPACES.COMPANY_NAME_FILTER}
-              onChange={handleChangeCompanyName}
-              filterOption={filterOption}
-              allowClear={true}
-              options={dropdownOptions}
-            />
-            <DatePicker
-              style={{ width: "20%" }}
-              placeholder={TOP_PAGE_NAME_SPACES.UPDATED_AT_FILTER}
-              allowClear={true}
-              onChange={handleChangeUpdatedAt}
-            />
-
-            <button className={cx(styles.submit_filter, "flex gap-1 items-center")} onClick={handleSubmit}>
-              <AiOutlineSearch />
-              <span>{TOP_PAGE_NAME_SPACES.SUBMIT_FILTER}</span>
-            </button>
-
-          </div>
-          <Spin spinning={loading}>
-            <CustomTable
-              columns={columns}
-              data={tableData?.items}
-              pagination={pagination}
-              setPage={setPage}
-              setLimit={setLimit}
-              tableName="home-page-table"
-              rowKey="key"
-              showQuickJumper={true}
-            />
-          </Spin>
-        </div>
-      </div>
+      <TopPageFilterComponent
+        payloadGet={payloadGet}
+        setPayloadGet={setPayloadGet}
+        isLoadingDropdown={isLoadingDropdown}
+        dropdownOptions={dropdownOptions}
+      />
+      <TableComponent
+        tableData={tableData}
+        payloadGet={payloadGet}
+        setPayloadGet={setPayloadGet}
+        columns={columns}
+        isLoading={isLoading}
+        pagination={pagination}
+        setPagination={setPagination}
+        tableName="top_page_table"
+      />
     </>
   );
 };

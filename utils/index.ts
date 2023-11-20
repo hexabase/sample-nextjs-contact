@@ -48,3 +48,6 @@ export const session = {
 export const formatTime = (date: any, type = REVERSED_DATE_FORMAT) => {
   return date ? moment(date).format(type) : "";
 };
+
+export const filterOption = (input: string, option?: { label: string; value: string }) =>
+  (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
