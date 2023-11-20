@@ -32,6 +32,8 @@ function InquiryContainer() {
   const { globalCustomerId, setGlobalCustomerId } = useCustomerIdStore();
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoadingDropdown, setIsLoadingDropdown] = useState<boolean>(true);
+  const [isFetching, setIsFetching] = useState<boolean>(false);
   const [tableData, setTableData] = useState<any>();
   const [pagination, setPagination] = useState({
     limit: DEFAULT_PARAM_SEARCH.per_page,
@@ -76,6 +78,7 @@ function InquiryContainer() {
       if (customerId === "" || customerId === null || customerId === undefined) {
         setCustomerId(response?.items?.[0]?.i_id);
       }
+      setIsLoadingDropdown(false);
     });
   }, []);
 
@@ -92,11 +95,12 @@ function InquiryContainer() {
 
   useEffect(() => {
     setIsLoading(true);
+    setIsFetching(false);
     getListInquiry(payloadGet).then(r => {
       setTableData(r);
       setIsLoading(false);
     });
-  }, [payloadGet]);
+  }, [payloadGet, isFetching]);
 
   useEffect(() => {
     const tempPagination = { ...pagination };
@@ -119,7 +123,7 @@ function InquiryContainer() {
       item: { status: statusObject?.id },
       is_force_update: true
     };
-    updateInquiry(payload, itemId).then(_ => window.location.reload());
+    updateInquiry(payload, itemId).then(_ => setIsFetching(true));
   };
   const columns: ColumnsType<ListInquiriesDataType> = [
     {
@@ -148,7 +152,7 @@ function InquiryContainer() {
       sorter: (a: any, b: any) => a?.[LIST_INQUIRIES_NAME_SPACES.TABLE_PIC.dataIndex].localeCompare(
         b?.[LIST_INQUIRIES_NAME_SPACES.TABLE_PIC.dataIndex]
       ),
-      render: (text: string, record: any) => (
+      render: (text: string, _: any) => (
         <Tooltip title={text}>
           <span>{text}</span>
         </Tooltip>
@@ -274,6 +278,7 @@ function InquiryContainer() {
         payloadGet={payloadGet}
         setPayloadGet={setPayloadGet}
         setCustomerId={setCustomerId}
+        isLoadingDropdown={isLoadingDropdown}
         customerOptionValue={customerOptionValue}
         customerOptions={customerOptions}
       />

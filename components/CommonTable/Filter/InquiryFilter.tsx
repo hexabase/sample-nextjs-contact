@@ -1,4 +1,4 @@
-import { Button, Form, Input, Select } from "antd";
+import { Button, Form, Input, Select, Spin } from "antd";
 import styles from "@/components/CommonTable/styles.module.scss";
 import { LIST_INQUIRIES_NAME_SPACES } from "@/common/constants/namespaces";
 import optionStatus from "@/common/constants/params";
@@ -15,6 +15,7 @@ interface Props {
   setCustomerId: any,
   customerOptionValue: any,
   customerOptions: any,
+  isLoadingDropdown: boolean,
 }
 
 const InquiryFilterComponent = (props: Props) => {
@@ -23,7 +24,8 @@ const InquiryFilterComponent = (props: Props) => {
     setPayloadGet,
     setCustomerId,
     customerOptionValue,
-    customerOptions
+    customerOptions,
+    isLoadingDropdown,
   } = props;
   const [form] = Form.useForm();
   const handleFinish = (values: any) => {
@@ -80,17 +82,20 @@ const InquiryFilterComponent = (props: Props) => {
           customerId: customerOptionValue
         }}
       >
-        <Form.Item name="customerId">
-          <Select
-            className="!w-60"
-            allowClear
-            showSearch
-            optionFilterProp="children"
-            placeholder={LIST_INQUIRIES_NAME_SPACES.COMPANY_NAME_PLACEHOLDER}
-            filterOption={filterOption}
-            options={customerOptions}
-          />
-        </Form.Item>
+        <Spin spinning={isLoadingDropdown}>
+          <Form.Item name="customerId">
+            <Select
+              className="!w-60"
+              allowClear
+              showSearch
+              optionFilterProp="children"
+              value={customerOptionValue}
+              placeholder={LIST_INQUIRIES_NAME_SPACES.COMPANY_NAME_PLACEHOLDER}
+              filterOption={filterOption}
+              options={customerOptions}
+            />
+          </Form.Item>
+        </Spin>
         <Form.Item name="keywordSearch">
           <Input
             placeholder={LIST_INQUIRIES_NAME_SPACES.SEARCH_PLACEHOLDER}
@@ -118,7 +123,9 @@ const InquiryFilterComponent = (props: Props) => {
         </Form.Item>
       </Form>
       <div>
-        <Button className={styles.btnNew} size="large" onClick={() => Router.push(APP_ROUTES.CREATE_INQUIRY)}>
+        <Button className={styles.btnNew} size="large" onClick={
+          () => Router.push(APP_ROUTES.CREATE_INQUIRY)
+        }>
           <IconPlus />
           {LIST_INQUIRIES_NAME_SPACES.BTN_CREATE}
         </Button>

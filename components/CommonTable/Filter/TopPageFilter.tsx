@@ -1,4 +1,4 @@
-import { DatePicker, Form, Select } from "antd";
+import { DatePicker, Form, Select, Spin } from "antd";
 import { TOP_PAGE_NAME_SPACES } from "@/common/constants/namespaces";
 import cx from "classnames";
 import styles from "@/containers/TopPage/styles.module.scss";
@@ -9,6 +9,7 @@ interface Props {
   payloadGet: any,
   setPayloadGet: any,
   dropdownOptions: any,
+  isLoadingDropdown: boolean,
 }
 
 const TopPageFilterComponent = (props: Props) => {
@@ -16,6 +17,7 @@ const TopPageFilterComponent = (props: Props) => {
     payloadGet,
     setPayloadGet,
     dropdownOptions,
+    isLoadingDropdown
   } = props;
   const onFinish = (values: any) => {
     const conditions = [];
@@ -42,42 +44,46 @@ const TopPageFilterComponent = (props: Props) => {
       conditions: conditions,
       use_or_condition: false
     });
-  }
+  };
   return (
-      <Form
-        className="flex justify-start items-center mb-5 gap-3"
-        onFinish={onFinish}
+    <Form
+      className="flex justify-start items-center mb-5 gap-3"
+      onFinish={onFinish}
+    >
+      <div className="w-1/5">
+        <Spin spinning={isLoadingDropdown} >
+          <Form.Item
+            className="mb-0"
+            name="customerId"
+          >
+            <Select
+              showSearch
+              allowClear
+              optionFilterProp="children"
+              placeholder={TOP_PAGE_NAME_SPACES.COMPANY_NAME_FILTER}
+              filterOption={filterOption}
+              options={dropdownOptions}
+            />
+          </Form.Item>
+        </Spin>
+      </div>
+      <Form.Item
+        className="w-1/5 mb-0"
+        name="searchDate"
       >
-        <Form.Item
-          className="w-1/5 mb-0"
-          name="customerId"
-        >
-          <Select
-            showSearch
-            allowClear
-            optionFilterProp="children"
-            placeholder={TOP_PAGE_NAME_SPACES.COMPANY_NAME_FILTER}
-            filterOption={filterOption}
-            options={dropdownOptions}
-          />
-        </Form.Item>
-        <Form.Item
-          className="w-1/5 mb-0"
-          name="searchDate"
-        >
-          <DatePicker
-            allowClear
-            className="w-full"
-            placeholder={TOP_PAGE_NAME_SPACES.UPDATED_AT_FILTER}
-          />
-        </Form.Item>
+        <DatePicker
+          allowClear
+          className="w-full"
+          placeholder={TOP_PAGE_NAME_SPACES.UPDATED_AT_FILTER}
+        />
+      </Form.Item>
 
-        <button className={cx(styles.submit_filter, "flex gap-1 items-center")}>
-          <AiOutlineSearch />
-          <span>{TOP_PAGE_NAME_SPACES.SUBMIT_FILTER}</span>
-        </button>
-      </Form>
-  )
-}
+      <button className={cx(styles.submit_filter, "flex gap-1 items-center")}>
+        <AiOutlineSearch />
+        <span>{TOP_PAGE_NAME_SPACES.SUBMIT_FILTER}</span>
+      </button>
+    </Form>
+  );
+};
 
 export default TopPageFilterComponent;

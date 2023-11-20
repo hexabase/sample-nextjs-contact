@@ -28,6 +28,7 @@ const HomeContainer: FC = () => {
   const { setGlobalCustomerId } = useCustomerIdStore();
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoadingDropdown, setIsLoadingDropdown] = useState<boolean>(true);
   const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
 
   const [pagination, setPagination] = useState({
@@ -70,6 +71,7 @@ const HomeContainer: FC = () => {
       });
     });
     setDropdownOptions(options);
+    setIsLoadingDropdown(false);
   };
 
   useQuery({
@@ -185,6 +187,7 @@ const HomeContainer: FC = () => {
       <TopPageFilterComponent
         payloadGet={payloadGet}
         setPayloadGet={setPayloadGet}
+        isLoadingDropdown={isLoadingDropdown}
         dropdownOptions={dropdownOptions}
       />
       <TableComponent
