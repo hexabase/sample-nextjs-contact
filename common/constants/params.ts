@@ -89,7 +89,7 @@ export const inquiryPriority = [
 ];
 
 export const inquiryStatusParams = (status: string) => {
-  switch (status.toLowerCase()) {
+  switch (status?.toLowerCase()) {
     case "confirmation": {
       return {
         borderColor: "#487CA5",

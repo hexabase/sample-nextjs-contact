@@ -10,11 +10,12 @@ import { TOP_PAGE_NAME_SPACES } from "@/common/constants/namespaces";
 import { DatePicker, Select, Tooltip } from "antd";
 import { AiOutlineSearch } from "react-icons/ai";
 import { APP_ROUTES } from "@/common/constants/routes";
-import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { customersServiceApi } from "@/services/customer-service";
 import { formatTime } from "@/utils";
 import { SPLASH_REVERSED_DATE_FORMAT } from "@/common/constants/dateFormat";
+import { useCustomerIdStore } from "@/hooks/useCustomerId";
+import { useRouter } from "next/router";
 
 const HomeContainer: FC = () => {
   // set title topBar
@@ -23,7 +24,10 @@ const HomeContainer: FC = () => {
     setTitle(PARAM_TOP_BAR_TITLE.TOP_PAGE);
   }, []);
 
+  const router = useRouter();
+
   const [tableData, setTableData] = useState<any>();
+  const { setGlobalCustomerId } = useCustomerIdStore();
 
   const [pagination, setPagination] = useState({
     limit: DEFAULT_PARAM_SEARCH.per_page,
@@ -94,7 +98,7 @@ const HomeContainer: FC = () => {
   };
 
   useQuery({
-    queryKey: ["customers", {dropdownPayload}],
+    queryKey: ["customers", { dropdownPayload }],
     queryFn: () => getListCustomer(dropdownPayload),
     onSuccess: (data) => setDropdownData(data)
   });
@@ -148,7 +152,7 @@ const HomeContainer: FC = () => {
       width: "12.5%",
       render: (text, record) => (
         <Tooltip title={text}>
-          <Link href={onClickRow(record)} style={{
+          <button onClick={() => onClickRow(record)} style={{
             maxWidth: "100%",
             display: "block",
             overflow: "hidden",
@@ -156,7 +160,7 @@ const HomeContainer: FC = () => {
             whiteSpace: "nowrap"
           }}>
             {text}
-          </Link>
+          </button>
         </Tooltip>
       )
     },
@@ -227,7 +231,8 @@ const HomeContainer: FC = () => {
   ];
 
   const onClickRow = (record: TopPageDataType) => {
-    return `${APP_ROUTES.LIST_INQUIRY}?customer_id=${record?.i_id}`;
+    setGlobalCustomerId(record?.i_id);
+    router.push(APP_ROUTES.LIST_INQUIRY);
   };
 
   return (

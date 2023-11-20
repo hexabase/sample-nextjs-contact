@@ -1,27 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Button, Checkbox, Form, Input, Popconfirm, Select, Space, Tooltip } from "antd";
+import { Button, Form, Input, Popconfirm, Select, Spin, Tooltip } from "antd";
 
 import styles from "./styles.module.scss";
-import Router, { useRouter } from "next/router";
+import Router from "next/router";
 import IconArrowLeft from "../icons/IconArrowLeft";
 import IconArrowRight from "../icons/IconArrowRight";
-import { useQuery } from "@tanstack/react-query";
 import { inquiryServiceApi } from "@/services/inquiry-service";
 import { formatTime } from "@/utils";
 import { SPLASH_REVERSED_DATE_FORMAT } from "@/common/constants/dateFormat";
-import optionStatus, {
-  DEFAULT_PARAM_SEARCH,
-  inquiryStatus,
-  inquiryStatusParams
-} from "@/common/constants/params";
+import optionStatus, { DEFAULT_PARAM_SEARCH, inquiryStatus, inquiryStatusParams } from "@/common/constants/params";
 import CustomTable from "@/components/tables";
 import { LIST_INQUIRIES_NAME_SPACES } from "@/common/constants/namespaces";
 import Link from "next/link";
 import { APP_ROUTES } from "@/common/constants/routes";
-import {
-  ListInquiriesDataType,
-  listInquiriesPayloadDataType
-} from "@/common/param-types";
+import { ListInquiriesDataType, listInquiriesPayloadDataType } from "@/common/param-types";
 import { ColumnsType } from "antd/es/table";
 import IconSearch from "@/components/icons/IconSearch";
 import IconPlus from "@/components/icons/IconPlus";
@@ -31,23 +23,21 @@ import { useCustomerIdStore } from "@/hooks/useCustomerId";
 
 function TableInquiry() {
   const [form] = Form.useForm();
-  const router = useRouter();
-  const { query } = router;
 
+  const { getListInquiry, updateInquiry } = inquiryServiceApi;
+  const { getListCustomer } = customersServiceApi;
+  const { globalCustomerId, setGlobalCustomerId } = useCustomerIdStore();
+
+  const [loading, setLoading] = useState<boolean>(true);
   const [tableData, setTableData] = useState<any>();
   const [pagination, setPagination] = useState({
     limit: DEFAULT_PARAM_SEARCH.per_page,
     page: DEFAULT_PARAM_SEARCH.page,
     total: tableData?.totalItems | 0
   });
-
-  const { getListInquiry, updateInquiry } = inquiryServiceApi;
-  const { setGlobalCustomerId } = useCustomerIdStore();
-
-  const [selectedOptions, setSelectedOptions] = useState<Array<any>>([]);
-  const [customerId, setCustomerId] = useState<string | any>(query?.customer_id);
-  const [keywordSearch, setKeywordSearch] = useState<any>();
-  const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
+  const [customerId, setCustomerId] = useState<string | any>(globalCustomerId);
+  const [companyOptions, setCompanyOptions] = useState<any[]>([]);
+  const [companyOptionValue, setCompanyOptionValue] = useState<any>([]);
 
   const [
     payloadGet, setPayloadGet
@@ -69,30 +59,64 @@ function TableInquiry() {
     setGlobalCustomerId(customerId);
   }, [customerId]);
 
-  useQuery({
-    queryKey: ["inquiries", { payloadGet }],
-    queryFn: () => getListInquiry(payloadGet),
-    onSuccess: (data) => setTableData(data)
-  });
-
-  const handleOnClick = () => {
-    Router.push(APP_ROUTES.CREATE_INQUIRY);
+  const dropdownPayload = {
+    "page": DEFAULT_PARAM_SEARCH.page,
+    "per_page": 9999,
+    "use_display_id": true,
+    "return_number_value": true
   };
 
-  const handleSubmit = () => {
+  useEffect(() => {
+    getListCustomer(dropdownPayload).then(r => {
+      const response: any = r;
+      setDropdownData(response);
+      if (customerId === "" || customerId === null || customerId === undefined) {
+        setCustomerId(response?.items?.[0]?.i_id);
+      }
+    });
+  }, []);
+
+  const setDropdownData = (data: any) => {
+    const options: any[] = [];
+    data?.items.forEach((item: any) => {
+      options.push({
+        value: item?.i_id,
+        label: item?.company_name
+      });
+    });
+    setCompanyOptions(options);
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    getListInquiry(payloadGet).then(r => {
+      setTableData(r);
+      setLoading(false);
+    });
+  }, [payloadGet]);
+
+  useEffect(() => {
+    const companyObject = companyOptions.find((item) => {
+      return item?.value === customerId;
+    });
+    setCompanyOptionValue(companyObject?.value);
+  }, [customerId, companyOptions]);
+
+  const handleFinish = (values: any) => {
     const conditions = [];
-    if (customerId) {
+    if (values?.customerId) {
+      setCustomerId(customerId);
       conditions.push(
         {
           "conditions": [
-            { "id": "customer_id", "search_value": [`${customerId}`] }
+            { "id": "customer_id", "search_value": [`${values?.customerId}`] }
           ]
         }
       );
     }
-    if (selectedOptions) {
+    if (values?.statusDropdown) {
       const statusConditions: { id: string; search_value: string[]; }[] = [];
-      selectedOptions.forEach((item) => {
+      values?.statusDropdown.forEach((item: any) => {
         statusConditions.push({
           "id": "status", "search_value": [`${item}`]
         });
@@ -104,11 +128,11 @@ function TableInquiry() {
         }
       );
     }
-    if (keywordSearch) {
+    if (values?.keywordSearch) {
       conditions.push(
         {
           "conditions": [
-            { "id": "Title", "search_value": [`${keywordSearch}`] }
+            { "id": "Title", "search_value": [`${values?.keywordSearch}`] }
           ]
         }
       );
@@ -144,40 +168,9 @@ function TableInquiry() {
     setPagination(tempPagination);
   };
 
-  const onClickRow = (record: ListInquiriesDataType) => {
-    return APP_ROUTES.DetailInquiry(record.i_id);
-  };
-
   // Filter `option.label` match the user type `input`
   const filterOption = (input: string, option?: { label: string; value: string }) =>
     (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
-
-  const dropdownPayload = {
-    "page": pagination.page,
-    "per_page": 999999,
-    "use_display_id": true,
-    "return_number_value": true
-  };
-
-  const { getListCustomer } = customersServiceApi;
-
-  const setDropdownData = (data: any) => {
-    const options: any[] = [];
-    const objects = data?.items;
-    objects.forEach((item: any) => {
-      options.push({
-        value: item?.i_id,
-        label: item?.company_name
-      });
-    });
-    setDropdownOptions(options);
-  };
-
-  useQuery({
-    queryKey: ["customers", { dropdownPayload }],
-    queryFn: () => getListCustomer(dropdownPayload),
-    onSuccess: (data) => setDropdownData(data)
-  });
   const columns: ColumnsType<ListInquiriesDataType> = [
     {
       title: LIST_INQUIRIES_NAME_SPACES.TABLE_TITLE.title,
@@ -191,7 +184,7 @@ function TableInquiry() {
       ),
       render: (text: string, record: any) => (
         <Tooltip title={text}>
-          <Link href={onClickRow(record)}>{text}</Link>
+          <Link href={APP_ROUTES.DetailInquiry(record.i_id)}>{text}</Link>
         </Tooltip>
       )
     },
@@ -325,96 +318,75 @@ function TableInquiry() {
       )
     }
   ];
-
   return (
-    <div>
-      <div className="flex items-center justify-between mb-5">
-        <Form
-          form={form}
-          className={styles.formFilter}
-          layout="inline"
-          size="large"
-        >
-          <Form.Item name="companyDropdown">
-            <Select
-              className="!w-60"
-              allowClear
-              placeholder={LIST_INQUIRIES_NAME_SPACES.COMPANY_NAME_PLACEHOLDER}
-              filterOption={filterOption}
-              options={dropdownOptions}
-              onSelect={(value) => {
-                setCustomerId(value);
-              }}
-            />
-          </Form.Item>
-          <Form.Item>
-            <Input
-              placeholder={LIST_INQUIRIES_NAME_SPACES.SEARCH_PLACEHOLDER}
-              onChange={(e) => setKeywordSearch(e.target.value)}
-            />
-          </Form.Item>
-          <Form.Item>
-            <Select
-              className="!w-48"
-              mode="multiple"
-              popupClassName={styles.popup}
-              options={optionStatus}
-              onSelect={(value) =>
-                setSelectedOptions([...selectedOptions, value])
-              }
-              onDeselect={(value) => {
-                const itemDeselected = selectedOptions.find(
-                  (opt: string) => opt === value
-                );
-                const idxItemDeselected = selectedOptions.findIndex(
-                  (opt: string) => opt === value
-                );
-                if (itemDeselected) {
-                  selectedOptions.splice(idxItemDeselected, 1);
-                  setSelectedOptions(selectedOptions);
-                }
-              }}
-              allowClear
-              placeholder={LIST_INQUIRIES_NAME_SPACES.STATUS_PLACEHOLDER}
-              optionRender={(option: any) => (
-                <Space>
-                  <Checkbox checked={selectedOptions.includes(option.value)} />
-                  {option.label}
-                </Space>
-              )}
-            />
-          </Form.Item>
-          <Form.Item>
-            <Button
-              type="default"
-              className={styles.btnSearch}
-              htmlType="submit"
-              onClick={handleSubmit}
-            >
-              <IconSearch />
-              {LIST_INQUIRIES_NAME_SPACES.BTN_SEARCH}
+    <>
+      <Spin spinning={loading}>
+        <div className="flex items-center justify-between mb-5">
+          <Form
+            form={form}
+            className={styles.formFilter}
+            layout="inline"
+            size="large"
+            onFinish={handleFinish}
+            initialValues={{
+              customerId: companyOptionValue
+            }}
+          >
+            <Form.Item name="customerId">
+              <Select
+                className="!w-60"
+                allowClear
+                placeholder={LIST_INQUIRIES_NAME_SPACES.COMPANY_NAME_PLACEHOLDER}
+                filterOption={filterOption}
+                // defaultValue={companyOptionValue}
+                options={companyOptions}
+              />
+            </Form.Item>
+            <Form.Item name="keywordSearch">
+              <Input
+                placeholder={LIST_INQUIRIES_NAME_SPACES.SEARCH_PLACEHOLDER}
+              />
+            </Form.Item>
+            <Form.Item name="statusDropdown">
+              <Select
+                className="!w-48"
+                mode="multiple"
+                popupClassName={styles.popup}
+                options={optionStatus}
+                allowClear
+                placeholder={LIST_INQUIRIES_NAME_SPACES.STATUS_PLACEHOLDER}
+              />
+            </Form.Item>
+            <Form.Item>
+              <Button
+                type="default"
+                className={styles.btnSearch}
+                htmlType="submit"
+              >
+                <IconSearch />
+                {LIST_INQUIRIES_NAME_SPACES.BTN_SEARCH}
+              </Button>
+            </Form.Item>
+          </Form>
+          <div>
+            <Button className={styles.btnNew} size="large" onClick={() => Router.push(APP_ROUTES.CREATE_INQUIRY)}>
+              <IconPlus />
+              {LIST_INQUIRIES_NAME_SPACES.BTN_CREATE}
             </Button>
-          </Form.Item>
-        </Form>
-        <div>
-          <Button className={styles.btnNew} size="large" onClick={handleOnClick}>
-            <IconPlus />
-            {LIST_INQUIRIES_NAME_SPACES.BTN_CREATE}
-          </Button>
+          </div>
         </div>
-      </div>
-      <CustomTable
-        columns={columns}
-        data={tableData?.items}
-        pagination={pagination}
-        setPage={setPage}
-        setLimit={setLimit}
-        tableName="inquiry-page-table"
-        rowKey={(record: any) => record.id}
-        showQuickJumper={true}
-      />
-
-    </div>
+        <CustomTable
+          columns={columns}
+          data={tableData?.items}
+          pagination={pagination}
+          setPage={setPage}
+          setLimit={setLimit}
+          tableName="inquiry-page-table"
+          rowKey={(record: any) => record.id}
+          showQuickJumper={true}
+        />
+      </Spin>
+    </>
   );
 }
 
