@@ -96,6 +96,12 @@ function TableInquiry() {
   }, [payloadGet]);
 
   useEffect(() => {
+    const tempPagination = { ...pagination };
+    tempPagination.total = tableData?.totalItems;
+    setPagination(tempPagination);
+  }, [tableData]);
+
+  useEffect(() => {
     const companyObject = companyOptions.find((item) => {
       return item?.value === customerId;
     });
@@ -159,6 +165,10 @@ function TableInquiry() {
   const setPage = (page: number) => {
     const tempPagination = { ...pagination };
     tempPagination.page = page;
+    setPayloadGet({
+      ...payloadGet,
+      page: page
+    });
     setPagination(tempPagination);
   };
 

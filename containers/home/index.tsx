@@ -7,7 +7,7 @@ import CustomTable from "@/components/tables";
 import type { ColumnsType } from "antd/es/table";
 import { homPagePayloadDataType, TopPageDataType } from "@/common/param-types";
 import { TOP_PAGE_NAME_SPACES } from "@/common/constants/namespaces";
-import { DatePicker, Select, Tooltip } from "antd";
+import { DatePicker, Select, Spin, Tooltip } from "antd";
 import { AiOutlineSearch } from "react-icons/ai";
 import { APP_ROUTES } from "@/common/constants/routes";
 import { useQuery } from "@tanstack/react-query";
@@ -29,15 +29,16 @@ const HomeContainer: FC = () => {
   const [tableData, setTableData] = useState<any>();
   const { setGlobalCustomerId } = useCustomerIdStore();
 
-  const [pagination, setPagination] = useState({
-    limit: DEFAULT_PARAM_SEARCH.per_page,
-    page: DEFAULT_PARAM_SEARCH.page,
-    total: tableData?.totalItems | 0
-  });
-
+  const [loading, setLoading] = useState<boolean>(true);
   const [searchDate, setSearchDate] = useState("");
   const [searchCompanyId, setSearchCompanyId] = useState("");
   const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
+
+  const [pagination, setPagination] = useState({
+    limit: DEFAULT_PARAM_SEARCH.per_page,
+    page: DEFAULT_PARAM_SEARCH.page,
+    total: tableData?.totalItems
+  });
 
   const [payloadGet, setPayloadGet] = useState<homPagePayloadDataType>({
     page: pagination.page || 1,
@@ -46,20 +47,32 @@ const HomeContainer: FC = () => {
     return_number_value: true
   });
 
-  useQuery({
-    queryKey: ["customers", { payloadGet }],
-    queryFn: () => getListCustomer(payloadGet),
-    onSuccess: (data) => setTableData(data)
-  });
+  useEffect(() => {
+    setLoading(true);
+    getListCustomer(payloadGet).then(r => {
+      setTableData(r);
+      setLoading(false);
+    });
+  }, [payloadGet]);
+
+  useEffect(() => {
+    const tempPagination = { ...pagination };
+    tempPagination.total = tableData?.totalItems;
+    setPagination(tempPagination);
+  }, [tableData]);
 
   const setPage = (page: number) => {
-    let tempPagination = { ...pagination };
+    const tempPagination = { ...pagination };
     tempPagination.page = page;
+    setPayloadGet({
+      ...payloadGet,
+      page: page
+    })
     setPagination(tempPagination);
   };
 
   const setLimit = (limit: number) => {
-    let tempPagination = { ...pagination };
+    const tempPagination = { ...pagination };
     tempPagination.limit = limit;
     setPagination(tempPagination);
   };
@@ -77,7 +90,7 @@ const HomeContainer: FC = () => {
     (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
 
   const dropdownPayload = {
-    "page": pagination.page,
+    "page": DEFAULT_PARAM_SEARCH.page,
     "per_page": 999999,
     "use_display_id": true,
     "return_number_value": true
@@ -263,16 +276,18 @@ const HomeContainer: FC = () => {
             </button>
 
           </div>
-          <CustomTable
-            columns={columns}
-            data={tableData?.items}
-            pagination={pagination}
-            setPage={setPage}
-            setLimit={setLimit}
-            tableName="home-page-table"
-            rowKey="key"
-            showQuickJumper={true}
-          />
+          <Spin spinning={loading}>
+            <CustomTable
+              columns={columns}
+              data={tableData?.items}
+              pagination={pagination}
+              setPage={setPage}
+              setLimit={setLimit}
+              tableName="home-page-table"
+              rowKey="key"
+              showQuickJumper={true}
+            />
+          </Spin>
         </div>
       </div>
     </>
