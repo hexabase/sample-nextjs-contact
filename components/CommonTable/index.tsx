@@ -48,6 +48,7 @@ const TableComponent = (props: Props) => {
   return (
     <Spin spinning={isLoading}>
       <CustomTable
+        showQuickJumper
         columns={columns}
         data={tableData?.items}
         pagination={pagination}
@@ -55,7 +56,6 @@ const TableComponent = (props: Props) => {
         setLimit={setLimit}
         tableName={tableName}
         rowKey="key"
-        showQuickJumper={true}
       />
     </Spin>
   );

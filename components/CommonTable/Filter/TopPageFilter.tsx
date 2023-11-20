@@ -3,6 +3,7 @@ import { TOP_PAGE_NAME_SPACES } from "@/common/constants/namespaces";
 import cx from "classnames";
 import styles from "@/containers/TopPage/styles.module.scss";
 import { AiOutlineSearch } from "react-icons/ai";
+import { filterOption } from "@/utils";
 
 interface Props {
   payloadGet: any,
@@ -16,9 +17,6 @@ const TopPageFilterComponent = (props: Props) => {
     setPayloadGet,
     dropdownOptions,
   } = props;
-  // Filter `option.label` match the user type `input`
-  const filterOption = (input: string, option?: { label: string; value: string }) =>
-    (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
   const onFinish = (values: any) => {
     const conditions = [];
     if (values?.customerId) {
