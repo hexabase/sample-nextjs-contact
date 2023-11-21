@@ -1,4 +1,11 @@
 @import '../../styles/variable.scss';
+.submit_filter {
+  border: 2px solid #A3BDD2;
+  color: #477CA5;
+  padding: .1rem .7rem;
+  border-radius: .3rem;
+}
+
 .formFilter {
   :global {
     .ant-select-selector,
@@ -48,9 +55,9 @@
     }
 
     .ant-table-wrapper
-      .ant-table-thead
-      > tr
-      > th:not(:last-child):not(.ant-table-selection-column):not(
+    .ant-table-thead
+    > tr
+    > th:not(:last-child):not(.ant-table-selection-column):not(
         .ant-table-row-expand-icon-cell
       ):not([colspan])::before {
       width: 0;
@@ -69,3 +76,4 @@
 .btnCf {
   display: none;
 }
+

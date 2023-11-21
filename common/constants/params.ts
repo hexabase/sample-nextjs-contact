@@ -33,7 +33,7 @@ export const inquiryStatus = [
     display: "受付",
     nextStatus: "確認",
     previousStatus: "完了",
-    id: "d8191865-cbae-424c-a007-fec4bc906dbb"
+    id: "d8607c9b-2845-4372-b7cd-50633435c660"
   },
   {
     display: "確認",
@@ -89,7 +89,7 @@ export const inquiryPriority = [
 ];
 
 export const inquiryStatusParams = (status: string) => {
-  switch (status.toLowerCase()) {
+  switch (status?.toLowerCase()) {
     case "confirmation": {
       return {
         borderColor: "#487CA5",

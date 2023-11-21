@@ -12,13 +12,12 @@ import { formatTime } from "@/utils";
 import { NON_SECOND_DATETIME_FORMAT, SPLASH_REVERSED_DATE_FORMAT } from "@/common/constants/dateFormat";
 import optionStatus, { inquiryImportance, inquiryPriority, inquiryUrgency } from "@/common/constants/params";
 import styles from "@/containers/DetailInquiry/formEdit/styles.module.scss";
-import { Button, DatePicker, Form, Input, Select } from "antd";
+import { Button, DatePicker, Form, Input, Select, Spin } from "antd";
 import classNames from "classnames";
 import IconEdit from "@/components/icons/IconEdit";
 import IconPlus from "@/components/icons/IconPlus";
 import IconCheck from "@/components/icons/IconCheck";
 import IconTrash from "@/components/icons/IconTrash";
-import IconLoading from "@/components/loadings/loading";
 import moment from "moment";
 import { toast } from "react-toastify";
 import { APP_ROUTES } from "@/common/constants/routes";
@@ -118,63 +117,61 @@ function DetailInquiry() {
   };
   return (
     <>
-      {isLoading ? (
-        <IconLoading />
-      ) : (
-        <div className="">
-          <div className="flex items-center justify-between">
-            <div className="text-3xl font-bold -mt-6">タイトル</div>
-            <div className="flex items-center gap-2">
-              {!isEdit && (
-                <Button
-                  size="large"
-                  className={classNames("flex gap-2 items-center", styles.btnDefault)}
-                  onClick={() => setIsEdit(true)}
-                >
-                  <IconEdit />
-                  編集
-                </Button>
-              )}
-              {isEdit && (
-                <Button
-                  size="large"
-                  className={classNames("flex gap-2 items-center", styles.btnDefault)}
-                  onClick={handleCancelEdit}
-                >
-                  <div className="rotate-45">
-                    <IconPlus />
-                  </div>
-                  キャンセル
-                </Button>
-              )}
-              {isEdit && (
-                <Button
-                  size="large"
-                  className={classNames("flex gap-2 items-center", styles.btnPrimary)}
-                  onClick={() => {
-                    form.submit();
-                  }}
-                >
-                  <IconCheck />
-                  完了
-                </Button>
-              )}
-
+      <div className="">
+        <div className="flex items-center justify-between">
+          <div className="text-3xl font-bold -mt-6">タイトル</div>
+          <div className="flex items-center gap-2">
+            {!isEdit && (
               <Button
                 size="large"
-                disabled={isEdit}
-                onClick={() => setShowModalDel(true)}
-                className={classNames(
-                  "flex gap-2 items-center",
-                  isEdit ? styles.btnDelDisabled : styles.btnDel
-                )}
+                className={classNames("flex gap-2 items-center", styles.btnDefault)}
+                onClick={() => setIsEdit(true)}
               >
-                <IconTrash />
-                削除
+                <IconEdit />
+                編集
               </Button>
-            </div>
-          </div>
+            )}
+            {isEdit && (
+              <Button
+                size="large"
+                className={classNames("flex gap-2 items-center", styles.btnDefault)}
+                onClick={handleCancelEdit}
+              >
+                <div className="rotate-45">
+                  <IconPlus />
+                </div>
+                キャンセル
+              </Button>
+            )}
+            {isEdit && (
+              <Button
+                size="large"
+                className={classNames("flex gap-2 items-center", styles.btnPrimary)}
+                onClick={() => {
+                  form.submit();
+                }}
+              >
+                <IconCheck />
+                完了
+              </Button>
+            )}
 
+            <Button
+              size="large"
+              disabled={isEdit}
+              onClick={() => setShowModalDel(true)}
+              className={classNames(
+                "flex gap-2 items-center",
+                isEdit ? styles.btnDelDisabled : styles.btnDel
+              )}
+            >
+              <IconTrash />
+              削除
+            </Button>
+          </div>
+        </div>
+
+        <Spin spinning={isLoading}>
           <div className="mt-5 flex gap-4">
             <Image src={avatarDefault} alt="avatar" width={56} height={56} />
             <div className="flex flex-col">
@@ -267,15 +264,15 @@ function DetailInquiry() {
               </div>
             </div>
           </Form>
-          {/*<FormEditData isEdit={isEdit} dataFields={dataFields} isSubmit={isSubmit} />*/}
+        </Spin>
+        {/*<FormEditData isEdit={isEdit} dataFields={dataFields} isSubmit={isSubmit} />*/}
 
-          <CommentComponent inquiryId={router.query.id} pic={pic?.value} />
-          <ModalDelete
-            setShowModalDel={setShowModalDel}
-            showModalDel={showModalDel}
-          />
-        </div>
-      )}
+        <CommentComponent inquiryId={router.query.id} pic={pic?.value} />
+        <ModalDelete
+          setShowModalDel={setShowModalDel}
+          showModalDel={showModalDel}
+        />
+      </div>
     </>
   );
 }
