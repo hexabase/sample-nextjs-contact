@@ -22,11 +22,14 @@ import { useCustomerIdStore } from "@/hooks/useCustomerId";
 import TableComponent from "@/components/CommonTable";
 import InquiryFilterComponent from "@/components/CommonTable/Filter/InquiryFilter";
 import { useTopBarStore } from "@/hooks/useTopBar";
+import { useRouter } from "next/router";
 
 
 function InquiryContainer() {
   const { setTitle } = useTopBarStore();
   useEffect(() => setTitle(PARAM_TOP_BAR_TITLE.INQUIRY_PAGE), []);
+
+  const router = useRouter();
   const { getListInquiry, updateInquiry } = inquiryServiceApi;
   const { getListCustomer } = customersServiceApi;
   const { globalCustomerId, setGlobalCustomerId } = useCustomerIdStore();
@@ -138,7 +141,10 @@ function InquiryContainer() {
       ),
       render: (text: string, record: any) => (
         <Tooltip title={text}>
-          <Link href={APP_ROUTES.DetailInquiry(record.i_id)}>{text}</Link>
+          <button onClick={() => {
+            setIsLoading(true);
+            router.push(APP_ROUTES.DetailInquiry(record.i_id)).then();
+          }}>{text}</button>
         </Tooltip>
       )
     },

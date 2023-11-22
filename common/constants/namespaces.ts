@@ -90,3 +90,10 @@ export const LIST_INQUIRIES_NAME_SPACES = {
   BTN_SEARCH: "検索",
   BTN_CREATE: "追加",
 };
+
+export const DETAIL_INQUIRY_NAME_SPACES = {
+  OPEN_EDIT_BTN: "編集",
+  CANCEL_EDIT_BTN: "キャンセル",
+  SUBMIT_EDIT_BTN: "完了",
+  DELETE_BTN: "削除",
+};

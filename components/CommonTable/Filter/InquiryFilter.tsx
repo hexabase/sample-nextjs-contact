@@ -6,7 +6,7 @@ import IconSearch from "@/components/icons/IconSearch";
 import Router from "next/router";
 import { APP_ROUTES } from "@/common/constants/routes";
 import IconPlus from "@/components/icons/IconPlus";
-import React from "react";
+import React, { useEffect } from "react";
 import { filterOption } from "@/utils";
 
 interface Props {
@@ -28,6 +28,12 @@ const InquiryFilterComponent = (props: Props) => {
     isLoadingDropdown,
   } = props;
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    form.setFieldsValue({
+      customerId: customerOptionValue
+    })
+  }, [customerOptionValue]);
   const handleFinish = (values: any) => {
     const conditions = [];
     if (values?.customerId) {
@@ -78,9 +84,6 @@ const InquiryFilterComponent = (props: Props) => {
         layout="inline"
         size="large"
         onFinish={handleFinish}
-        initialValues={{
-          customerId: customerOptionValue
-        }}
       >
         <Spin spinning={isLoadingDropdown}>
           <Form.Item name="customerId">
@@ -89,7 +92,6 @@ const InquiryFilterComponent = (props: Props) => {
               allowClear
               showSearch
               optionFilterProp="children"
-              value={customerOptionValue}
               placeholder={LIST_INQUIRIES_NAME_SPACES.COMPANY_NAME_PLACEHOLDER}
               filterOption={filterOption}
               options={customerOptions}

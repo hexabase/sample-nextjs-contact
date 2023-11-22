@@ -25,21 +25,21 @@ export const inquiryStatus = [
   },
   {
     display: "完了",
-    nextStatus: "受付",
+    nextStatus: "確認",
     previousStatus: "作業中",
     id: "b05c9d79-2769-49a1-8b50-35cf278eccf1"
   },
   {
-    display: "受付",
-    nextStatus: "確認",
+    display: "確認",
+    nextStatus: "受付",
     previousStatus: "完了",
     id: "d8607c9b-2845-4372-b7cd-50633435c660"
   },
   {
-    display: "確認",
+    display: "受付",
     nextStatus: "",
-    previousStatus: "受付",
-    id: "d8607c9b-2845-4372-b7cd-50633435c66"
+    previousStatus: "確認",
+    id: "d8191865-cbae-424c-a007-fec4bc906dbb"
   }
 ];
 
