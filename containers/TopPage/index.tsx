@@ -179,7 +179,8 @@ const HomeContainer: FC = () => {
 
   const onClickRow = (record: TopPageDataType) => {
     setGlobalCustomerId(record?.i_id);
-    router.push(APP_ROUTES.LIST_INQUIRY);
+    setIsLoading(true);
+    router.push(APP_ROUTES.LIST_INQUIRY).then();
   };
 
   return (

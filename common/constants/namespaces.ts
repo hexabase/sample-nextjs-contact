@@ -90,3 +90,25 @@ export const LIST_INQUIRIES_NAME_SPACES = {
   BTN_SEARCH: "検索",
   BTN_CREATE: "追加",
 };
+
+export const DETAIL_INQUIRY_NAME_SPACES = {
+  OPEN_EDIT_BTN: "編集",
+  CANCEL_EDIT_BTN: "キャンセル",
+  SUBMIT_EDIT_BTN: "完了",
+  DELETE_BTN: "削除",
+  COMMENT_BOX_TITLE: "コメント",
+  CREATED_DATE_LABEL: "投稿日時",
+  DEADLINE_DATE_LABEL: "期限日",
+  PIC_LABEL: "担当者",
+  TASK_DUE_DATE_LABEL: "対応期限",
+  STATUS_LABEL: "ステータス",
+  IMPORTANT_LABEL: "重要度",
+  URGENCY_LABEL: "緊急度",
+  PRIORITY_LABEL: "優先度",
+};
+
+export const LOGIN_NAME_SPACES = {
+  EMAIL_PLACEHOLDER: "メールアドレス",
+  PASSWORD_PLACEHOLDER: "パスワード",
+  SUBMIT_BTN: "ログイン",
+};
