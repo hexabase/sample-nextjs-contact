@@ -1,8 +1,9 @@
-import styles from "@/containers/DetailInquiry/formEdit/styles.module.scss";
+import styles from "./styles.module.scss";
 import { DatePicker, Form, Input, Select } from "antd";
 import { SPLASH_REVERSED_DATE_FORMAT } from "@/common/constants/dateFormat";
 import optionStatus, { inquiryImportance, inquiryPriority, inquiryUrgency } from "@/common/constants/params";
 import React from "react";
+import { DETAIL_INQUIRY_NAME_SPACES } from "@/common/constants/namespaces";
 
 
 interface Props {
@@ -15,7 +16,7 @@ const InquiryFormData = (props: Props) => {
   const {
     form,
     isEdit,
-    onFinish,
+    onFinish
   } = props;
   return (
     <Form
@@ -28,7 +29,7 @@ const InquiryFormData = (props: Props) => {
       <div className="w-full flex gap-6 ">
         <div className="w-1/2">
           <div className="py-1 border-t-2 border-t-[#E6E6E6]">
-            <Form.Item label="対応期限" name="task_due_date">
+            <Form.Item label={DETAIL_INQUIRY_NAME_SPACES.TASK_DUE_DATE_LABEL} name="task_due_date">
               <DatePicker
                 className="w-60"
                 size="large"
@@ -38,12 +39,12 @@ const InquiryFormData = (props: Props) => {
             </Form.Item>
           </div>
           <div className="py-1 border-t-2 border-t-[#E6E6E6]">
-            <Form.Item label="担当者" name="pic">
+            <Form.Item label={DETAIL_INQUIRY_NAME_SPACES.PIC_LABEL} name="pic">
               <Input className="w-60" size="large" />
             </Form.Item>
           </div>
           <div className="py-1 border-y-2 border-y-[#E6E6E6]">
-            <Form.Item label="ステータス" name="status">
+            <Form.Item label={DETAIL_INQUIRY_NAME_SPACES.STATUS_LABEL} name="status">
               <Select
                 className="!w-60"
                 size="large"
@@ -54,7 +55,7 @@ const InquiryFormData = (props: Props) => {
         </div>
         <div className="w-1/2">
           <div className="py-1 border-t-2 border-t-[#E6E6E6]">
-            <Form.Item label="重要度" name="important">
+            <Form.Item label={DETAIL_INQUIRY_NAME_SPACES.IMPORTANT_LABEL} name="important">
               <Select
                 className="!w-60"
                 size="large"
@@ -63,7 +64,7 @@ const InquiryFormData = (props: Props) => {
             </Form.Item>
           </div>
           <div className="py-1 border-t-2 border-t-[#E6E6E6]">
-            <Form.Item label="緊急度" name="urgency">
+            <Form.Item label={DETAIL_INQUIRY_NAME_SPACES.URGENCY_LABEL} name="urgency">
               <Select
                 className="!w-60"
                 size="large"
@@ -72,7 +73,7 @@ const InquiryFormData = (props: Props) => {
             </Form.Item>
           </div>
           <div className="py-1 border-y-2 border-y-[#E6E6E6]">
-            <Form.Item label="優先度" name="priority">
+            <Form.Item label={DETAIL_INQUIRY_NAME_SPACES.PRIORITY_LABEL} name="priority">
               <Select
                 className="!w-60"
                 size="large"

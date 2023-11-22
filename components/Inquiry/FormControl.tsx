@@ -1,6 +1,6 @@
 import { Button } from "antd";
 import classNames from "classnames";
-import styles from "@/containers/DetailInquiry/formEdit/styles.module.scss";
+import styles from "./styles.module.scss";
 import IconEdit from "@/components/icons/IconEdit";
 import IconPlus from "@/components/icons/IconPlus";
 import IconCheck from "@/components/icons/IconCheck";

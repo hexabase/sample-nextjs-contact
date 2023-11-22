@@ -1,7 +1,7 @@
 import { useTopBarStore } from "@/hooks/useTopBar";
 import React, { useEffect, useState } from "react";
 import ModalDelete from "@/components/ModalDelete";
-import CommentComponent from "./componentComment";
+import CommentComponent from "@/components/Inquiry/CommentBox";
 import { useRouter } from "next/router";
 import { detailInquiryPayloadDataType } from "@/common/param-types";
 import { inquiryServiceApi } from "@/services/inquiry-service";
@@ -102,7 +102,7 @@ function DetailInquiry() {
       important: important?.value,
       urgency: urgency?.value,
       priority: priority?.value
-    })
+    });
   }, [extractData]);
 
   const [isEdit, setIsEdit] = useState<boolean>(false);
@@ -131,36 +131,33 @@ function DetailInquiry() {
   };
   return (
     <>
-      <div className="">
-        <FormControl
+      <FormControl
+        isEdit={isEdit}
+        setIsEdit={setIsEdit}
+        handleCancelEdit={handleCancelEdit}
+        form={form}
+        setShowModalDel={setShowModalDel}
+      />
+
+      <Spin spinning={isLoading}>
+        <BasicInquiryInformation
+          data={data}
+          systemDueDate={systemDueDate}
+          content={content}
+        />
+
+        <InquiryFormData
           isEdit={isEdit}
-          setIsEdit={setIsEdit}
-          handleCancelEdit={handleCancelEdit}
           form={form}
-          setShowModalDel={setShowModalDel}
+          onFinish={onFinish}
         />
+      </Spin>
 
-        <Spin spinning={isLoading}>
-          <BasicInquiryInformation
-            data={data}
-            systemDueDate={systemDueDate}
-            content={content}
-          />
-
-          <InquiryFormData
-            isEdit={isEdit}
-            form={form}
-            onFinish={onFinish}
-          />
-        </Spin>
-        {/*<FormEditData isEdit={isEdit} dataFields={dataFields} isSubmit={isSubmit} />*/}
-
-        <CommentComponent inquiryId={router.query.id} pic={pic?.value} />
-        <ModalDelete
-          setShowModalDel={setShowModalDel}
-          showModalDel={showModalDel}
-        />
-      </div>
+      <CommentComponent inquiryId={router.query.id} pic={pic?.value} />
+      <ModalDelete
+        setShowModalDel={setShowModalDel}
+        showModalDel={showModalDel}
+      />
     </>
   );
 }

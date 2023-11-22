@@ -2,13 +2,13 @@ import IconSend from "@/components/icons/IconSend";
 import { Input, Spin } from "antd";
 import React, { useEffect, useState } from "react";
 import { listInquiriesPayloadDataType } from "@/common/param-types";
-import { useQuery } from "@tanstack/react-query";
 import { DEFAULT_PARAM_SEARCH } from "@/common/constants/params";
 import { commentServiceApi } from "@/services/comment-service";
 import { formatTime } from "@/utils";
 import { NON_SECOND_DATETIME_FORMAT } from "@/common/constants/dateFormat";
 import Cookies from "js-cookie";
 import { COOKIES_KEY } from "@/common/constants/cookie";
+import { DETAIL_INQUIRY_NAME_SPACES } from "@/common/constants/namespaces";
 
 interface Props {
   inquiryId?: any;
@@ -38,11 +38,9 @@ function CommentComponent(props: Props) {
     ]
   });
 
-  useQuery({
-    queryKey: ["comments", { payloadGet, isFetching }],
-    queryFn: () => getListComments(payloadGet),
-    onSuccess: (data) => setTableData(data)
-  });
+  useEffect(() => {
+    getListComments(payloadGet).then(r => setTableData(r));
+  }, [payloadGet, isFetching]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -68,7 +66,7 @@ function CommentComponent(props: Props) {
   return (
     <div className="mx-2 mt-5 mb-8 rounded bg-[#fff] shadow-[0_0_15px_5px_#00000025] p-5">
       <div className="text-base border-b-2 border-b-[#E6E6E6] py-1">
-        コメント
+        {DETAIL_INQUIRY_NAME_SPACES.COMMENT_BOX_TITLE}
       </div>
       <Spin spinning={isLoading}>
         {tableData?.items && (
