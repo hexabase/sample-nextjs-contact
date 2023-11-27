@@ -5,7 +5,7 @@ export interface DefaultSearchList {
   per_page: number;
 }
 
-export interface TopPageDataType {
+export interface HomePageDataType {
   id: string | number;
   i_id: string;
   company_name: string;
@@ -39,13 +39,13 @@ export interface ListInquiriesDataType {
   importance: string
 }
 
-export interface homPagePayloadDataType {
+export interface homePagePayloadDataType {
   page: number,
   per_page: number,
   use_display_id: boolean,
   return_number_value: boolean,
   conditions?: any[],
-  sortFields?: SortFieldsType[]
+  sort_fields?: SortFieldsType[]
   use_or_condition?: boolean,
 }
 
