@@ -13,7 +13,6 @@ import {
   PARAM_TOP_BAR_TITLE
 } from "@/common/constants/params";
 import { LIST_INQUIRIES_NAME_SPACES } from "@/common/constants/namespaces";
-import Link from "next/link";
 import { APP_ROUTES } from "@/common/constants/routes";
 import { ListInquiriesDataType, listInquiriesPayloadDataType } from "@/common/param-types";
 import { ColumnsType } from "antd/es/table";
@@ -22,11 +21,14 @@ import { useCustomerIdStore } from "@/hooks/useCustomerId";
 import TableComponent from "@/components/CommonTable";
 import InquiryFilterComponent from "@/components/CommonTable/Filter/InquiryFilter";
 import { useTopBarStore } from "@/hooks/useTopBar";
+import { useRouter } from "next/router";
 
 
 function InquiryContainer() {
   const { setTitle } = useTopBarStore();
   useEffect(() => setTitle(PARAM_TOP_BAR_TITLE.INQUIRY_PAGE), []);
+
+  const router = useRouter();
   const { getListInquiry, updateInquiry } = inquiryServiceApi;
   const { getListCustomer } = customersServiceApi;
   const { globalCustomerId, setGlobalCustomerId } = useCustomerIdStore();
@@ -129,29 +131,30 @@ function InquiryContainer() {
     {
       title: LIST_INQUIRIES_NAME_SPACES.TABLE_TITLE.title,
       dataIndex: LIST_INQUIRIES_NAME_SPACES.TABLE_TITLE.dataIndex,
+      key: LIST_INQUIRIES_NAME_SPACES.TABLE_TITLE.dataIndex,
       align: "center",
       showSorterTooltip: false,
       width: "20%",
       ellipsis: true,
-      sorter: (a: any, b: any) => a?.[LIST_INQUIRIES_NAME_SPACES.TABLE_TITLE.dataIndex].localeCompare(
-        b?.[LIST_INQUIRIES_NAME_SPACES.TABLE_TITLE.dataIndex]
-      ),
+      sorter: true,
       render: (text: string, record: any) => (
         <Tooltip title={text}>
-          <Link href={APP_ROUTES.DetailInquiry(record.i_id)}>{text}</Link>
+          <button onClick={() => {
+            setIsLoading(true);
+            router.push(APP_ROUTES.DetailInquiry(record.i_id)).then();
+          }}>{text}</button>
         </Tooltip>
       )
     },
     {
       title: LIST_INQUIRIES_NAME_SPACES.TABLE_PIC.title,
       dataIndex: LIST_INQUIRIES_NAME_SPACES.TABLE_PIC.dataIndex,
+      key: LIST_INQUIRIES_NAME_SPACES.TABLE_PIC.dataIndex,
       align: "center",
       showSorterTooltip: false,
       width: "20%",
       ellipsis: true,
-      sorter: (a: any, b: any) => a?.[LIST_INQUIRIES_NAME_SPACES.TABLE_PIC.dataIndex].localeCompare(
-        b?.[LIST_INQUIRIES_NAME_SPACES.TABLE_PIC.dataIndex]
-      ),
+      sorter: true,
       render: (text: string, _: any) => (
         <Tooltip title={text}>
           <span>{text}</span>
@@ -161,10 +164,11 @@ function InquiryContainer() {
     {
       title: LIST_INQUIRIES_NAME_SPACES.TABLE_STATUS.title,
       dataIndex: LIST_INQUIRIES_NAME_SPACES.TABLE_STATUS.dataIndex,
+      key: LIST_INQUIRIES_NAME_SPACES.TABLE_STATUS.dataIndex,
       align: "center",
       showSorterTooltip: false,
       width: "10%",
-      sorter: (a: any, b: any) => a?.[LIST_INQUIRIES_NAME_SPACES.TABLE_STATUS.dataIndex].localeCompare(b?.[LIST_INQUIRIES_NAME_SPACES.TABLE_STATUS.dataIndex]),
+      sorter: true,
       render: (_: string, record: any) => {
         const transformedStatus = inquiryStatusParams(record.status);
         const stylesCss = {
@@ -227,12 +231,11 @@ function InquiryContainer() {
     {
       title: LIST_INQUIRIES_NAME_SPACES.TABLE_DATE.title,
       dataIndex: LIST_INQUIRIES_NAME_SPACES.TABLE_DATE.dataIndex,
+      key: LIST_INQUIRIES_NAME_SPACES.TABLE_DATE.dataIndex,
       align: "center",
       showSorterTooltip: false,
       width: "12.5%",
-      sorter: (a: any, b: any) => a?.[LIST_INQUIRIES_NAME_SPACES.TABLE_DATE.dataIndex].localeCompare(
-        b?.[LIST_INQUIRIES_NAME_SPACES.TABLE_DATE.dataIndex]
-      ),
+      sorter: true,
       render: (_: string, record: any) => {
         return <div>{
           record?.updated_at
@@ -244,32 +247,29 @@ function InquiryContainer() {
     {
       title: LIST_INQUIRIES_NAME_SPACES.TABLE_IMPORTANCE.title,
       dataIndex: LIST_INQUIRIES_NAME_SPACES.TABLE_IMPORTANCE.dataIndex,
+      key: LIST_INQUIRIES_NAME_SPACES.TABLE_IMPORTANCE.dataIndex,
       align: "center",
       showSorterTooltip: false,
       width: "12.5%",
-      sorter: (a: any, b: any) => a?.[LIST_INQUIRIES_NAME_SPACES.TABLE_IMPORTANCE.dataIndex].localeCompare(
-        b?.[LIST_INQUIRIES_NAME_SPACES.TABLE_IMPORTANCE.dataIndex]
-      )
+      sorter: true
     },
     {
       title: LIST_INQUIRIES_NAME_SPACES.TABLE_URGENCY.title,
       dataIndex: LIST_INQUIRIES_NAME_SPACES.TABLE_URGENCY.dataIndex,
+      key: LIST_INQUIRIES_NAME_SPACES.TABLE_URGENCY.dataIndex,
       align: "center",
       showSorterTooltip: false,
       width: "12.5%",
-      sorter: (a: any, b: any) => a?.[LIST_INQUIRIES_NAME_SPACES.TABLE_URGENCY.dataIndex].localeCompare(
-        b?.[LIST_INQUIRIES_NAME_SPACES.TABLE_TITLE.dataIndex]
-      )
+      sorter: true
     },
     {
       title: LIST_INQUIRIES_NAME_SPACES.TABLE_PRIORITY.title,
       dataIndex: LIST_INQUIRIES_NAME_SPACES.TABLE_PRIORITY.dataIndex,
+      key: LIST_INQUIRIES_NAME_SPACES.TABLE_PRIORITY.dataIndex,
       align: "center",
       showSorterTooltip: false,
       width: "12.5%",
-      sorter: (a: any, b: any) => a?.[LIST_INQUIRIES_NAME_SPACES.TABLE_PRIORITY.dataIndex].localeCompare(
-        b?.[LIST_INQUIRIES_NAME_SPACES.TABLE_PRIORITY.dataIndex]
-      )
+      sorter: true
     }
   ];
   return (

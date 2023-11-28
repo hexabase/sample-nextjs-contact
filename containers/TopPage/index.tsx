@@ -3,7 +3,7 @@ import { useTopBarStore } from "@/hooks/useTopBar";
 import { DEFAULT_PARAM_SEARCH, PARAM_TOP_BAR_TITLE } from "@/common/constants/params";
 import TableComponent from "@/components/CommonTable";
 import type { ColumnsType } from "antd/es/table";
-import { homPagePayloadDataType, TopPageDataType } from "@/common/param-types";
+import { homePagePayloadDataType, HomePageDataType } from "@/common/param-types";
 import { TOP_PAGE_NAME_SPACES } from "@/common/constants/namespaces";
 import { Tooltip } from "antd";
 import { APP_ROUTES } from "@/common/constants/routes";
@@ -37,7 +37,7 @@ const HomeContainer: FC = () => {
     total: tableData?.totalItems
   });
 
-  const [payloadGet, setPayloadGet] = useState<homPagePayloadDataType>({
+  const [payloadGet, setPayloadGet] = useState<homePagePayloadDataType>({
     page: pagination.page || 1,
     per_page: pagination.limit || 10,
     use_display_id: true,
@@ -80,13 +80,13 @@ const HomeContainer: FC = () => {
     onSuccess: (data) => setDropdownData(data)
   });
 
-  const columns: ColumnsType<TopPageDataType> = [
+  const columns: ColumnsType<HomePageDataType> = [
     {
       title: TOP_PAGE_NAME_SPACES.ID.title,
       dataIndex: TOP_PAGE_NAME_SPACES.ID.dataIndex,
       key: TOP_PAGE_NAME_SPACES.ID.dataIndex,
       showSorterTooltip: false,
-      sorter: (a: any, b: any) => a?.[TOP_PAGE_NAME_SPACES.ID.dataIndex].localeCompare(b?.[TOP_PAGE_NAME_SPACES.ID.dataIndex]),
+      sorter: true,
       ellipsis: true,
       width: "12.5%",
       render: (text, record) => (
@@ -100,7 +100,7 @@ const HomeContainer: FC = () => {
       dataIndex: TOP_PAGE_NAME_SPACES.COMPANY_NAME.dataIndex,
       key: TOP_PAGE_NAME_SPACES.COMPANY_NAME.dataIndex,
       showSorterTooltip: false,
-      sorter: (a: any, b: any) => a?.[TOP_PAGE_NAME_SPACES.COMPANY_NAME.dataIndex].length - b?.[TOP_PAGE_NAME_SPACES.COMPANY_NAME.dataIndex].length,
+      sorter: true,
       ellipsis: true,
       width: "12.5%",
       render: (text, record) => (
@@ -116,7 +116,7 @@ const HomeContainer: FC = () => {
       dataIndex: TOP_PAGE_NAME_SPACES.UPDATED_AT.dataIndex,
       key: TOP_PAGE_NAME_SPACES.UPDATED_AT.dataIndex,
       showSorterTooltip: false,
-      sorter: (a: any, b: any) => a?.[TOP_PAGE_NAME_SPACES.UPDATED_AT.dataIndex].localeCompare(b?.[TOP_PAGE_NAME_SPACES.UPDATED_AT.dataIndex]),
+      sorter: true,
       ellipsis: true,
       width: "12.5%",
       render: (_, record) => (<span className="flex justify-center w-full">{
@@ -130,7 +130,7 @@ const HomeContainer: FC = () => {
       dataIndex: TOP_PAGE_NAME_SPACES.UNFINISHED_TASKS.dataIndex,
       key: TOP_PAGE_NAME_SPACES.UNFINISHED_TASKS.dataIndex,
       showSorterTooltip: false,
-      sorter: (a: any, b: any) => a?.[TOP_PAGE_NAME_SPACES.UNFINISHED_TASKS.dataIndex] - b?.[TOP_PAGE_NAME_SPACES.UNFINISHED_TASKS.dataIndex],
+      sorter: true,
       ellipsis: true,
       width: "12.5%",
       render: (text) => (<span className="flex justify-center w-full">{text ? text : "-"}</span>)
@@ -140,7 +140,7 @@ const HomeContainer: FC = () => {
       dataIndex: TOP_PAGE_NAME_SPACES.NEW_TASKS.dataIndex,
       key: TOP_PAGE_NAME_SPACES.NEW_TASKS.dataIndex,
       showSorterTooltip: false,
-      sorter: (a: any, b: any) => a?.[TOP_PAGE_NAME_SPACES.NEW_TASKS.dataIndex] - b?.[TOP_PAGE_NAME_SPACES.NEW_TASKS.dataIndex],
+      sorter: true,
       ellipsis: true,
       width: "12.5%",
       render: (text) => (<span className="flex justify-center w-full">{text ? text : "-"}</span>)
@@ -150,7 +150,7 @@ const HomeContainer: FC = () => {
       dataIndex: TOP_PAGE_NAME_SPACES.RECEIVED_TASKS.dataIndex,
       key: TOP_PAGE_NAME_SPACES.RECEIVED_TASKS.dataIndex,
       showSorterTooltip: false,
-      sorter: (a: any, b: any) => a?.[TOP_PAGE_NAME_SPACES.RECEIVED_TASKS.dataIndex] - b?.[TOP_PAGE_NAME_SPACES.RECEIVED_TASKS.dataIndex],
+      sorter: true,
       ellipsis: true,
       width: "12.5%",
       render: (text) => (<span className="flex justify-center w-full">{text ? text : "-"}</span>)
@@ -160,7 +160,7 @@ const HomeContainer: FC = () => {
       dataIndex: TOP_PAGE_NAME_SPACES.IN_PROGRESS_TASKS.dataIndex,
       key: TOP_PAGE_NAME_SPACES.IN_PROGRESS_TASKS.dataIndex,
       showSorterTooltip: false,
-      sorter: (a: any, b: any) => a?.[TOP_PAGE_NAME_SPACES.IN_PROGRESS_TASKS.dataIndex] - b?.[TOP_PAGE_NAME_SPACES.IN_PROGRESS_TASKS.dataIndex],
+      sorter: true,
       ellipsis: true,
       width: "12.5%",
       render: (text) => (<span className="flex justify-center w-full">{text ? text : "-"}</span>)
@@ -170,16 +170,17 @@ const HomeContainer: FC = () => {
       dataIndex: TOP_PAGE_NAME_SPACES.CONFIRMED_TASKS.dataIndex,
       key: TOP_PAGE_NAME_SPACES.CONFIRMED_TASKS.dataIndex,
       showSorterTooltip: false,
-      sorter: (a: any, b: any) => a?.[TOP_PAGE_NAME_SPACES.CONFIRMED_TASKS.dataIndex] - b?.[TOP_PAGE_NAME_SPACES.CONFIRMED_TASKS.dataIndex],
+      sorter: true,
       ellipsis: true,
       width: "12.5%",
       render: (text) => (<span className="flex justify-center w-full">{text ? text : "-"}</span>)
     }
   ];
 
-  const onClickRow = (record: TopPageDataType) => {
+  const onClickRow = (record: HomePageDataType) => {
     setGlobalCustomerId(record?.i_id);
-    router.push(APP_ROUTES.LIST_INQUIRY);
+    setIsLoading(true);
+    router.push(APP_ROUTES.LIST_INQUIRY).then();
   };
 
   return (
