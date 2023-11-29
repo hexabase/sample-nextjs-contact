@@ -9,7 +9,7 @@ export const TOP_PAGE_NAME_SPACES = {
   },
   UPDATED_AT: {
     title: "最終更新日",
-    dataIndex: "updateAt"
+    dataIndex: "date"
   },
   UNFINISHED_TASKS: {
     title: "未完了タスク",
