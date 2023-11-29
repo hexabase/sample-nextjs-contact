@@ -8,7 +8,6 @@ import { useRouter } from "next/router";
 import IconHome from "../icons/IconHome";
 import IconHeadPhone from "../icons/IconHeadPhone";
 import Topbar from "@/components/layouts/topbar/Topbar";
-import { useUser, useUserStore } from "@/hooks/useUser";
 
 const cx = classNames.bind(styles);
 
@@ -18,10 +17,8 @@ const PrivateLayout: React.FC<{ children: any; className?: string }> = (
     className
   }
 ) => {
-  useUser();
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [springStyles, api] = useSpring(() => spring.FADED);
-  const { user } = useUserStore();
 
   const router = useRouter();
   // const menuLeft: any[] = [];

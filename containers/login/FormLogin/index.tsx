@@ -14,8 +14,10 @@ import { APP_ROUTES } from "@/common/constants/routes";
 import { COOKIES_KEY } from "@/common/constants/cookie";
 import { LOGIN_NAME_SPACES } from "@/common/constants/namespaces";
 import { Spin } from "antd";
+import { useHexabase, useHexabaseStore } from "@/hooks/useHexabase";
 
 const FormLogin: React.FC = () => {
+  const { setClientHxb } = useHexabaseStore();
   const {
     loginMutation: { mutate, isLoading }
   } = useAuth();
@@ -32,8 +34,8 @@ const FormLogin: React.FC = () => {
   const { handleSubmit } = methods;
 
   const onSuccess = (res: any) => {
-    if (res?.token) {
-      Cookies.set(COOKIES_KEY.ACCESS_TOKEN, res?.token);
+    if (res?.tokenHxb) {
+      Cookies.set(COOKIES_KEY.ACCESS_TOKEN, res?.tokenHxb);
       router.push(APP_ROUTES.HOME).then();
     }
   };
@@ -42,8 +44,19 @@ const FormLogin: React.FC = () => {
     toast.error(error?.data?.message || "Wrong email or password");
   };
 
-  const onSubmit = (values: any) => {
-    return mutate(values, { onSuccess, onError });
+  const onSubmit = async (values: any) => {
+    let client = await useHexabase(values?.email, values?.password);
+    if (client) {
+      setClientHxb(client);
+      Cookies.set(COOKIES_KEY.ACCESS_TOKEN, client.tokenHxb);
+      Cookies.set(COOKIES_KEY.USERNAME, client?.currentUser?.userName ?? "");
+      Cookies.set(COOKIES_KEY.EMAIL, client?.currentUser?.email ?? "");
+      Cookies.set(COOKIES_KEY.USER_ID, client?.currentUser?.id ?? "");
+      Cookies.set(COOKIES_KEY.PROFILE_PICTURE, client?.currentUser?.profilePicture ?? "");
+      await router.push(APP_ROUTES.HOME);
+    }
+
+    // return mutate(values, { onSuccess, onError });
   };
 
   return (

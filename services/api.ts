@@ -1,39 +1,77 @@
 import { COOKIES_KEY } from "@/common/constants/cookie";
-import HTTP_STATUS_CONSTANTS from "@/common/constants/httpStatus";
-import { APP_ROUTES } from "@/common/constants/routes";
-import axios, { AxiosError } from "axios";
 import Cookies from "js-cookie";
-import Router from "next/router";
+import { HexabaseClient, Item } from "@hexabase/hexabase-js";
+import { CREATE_DATASTORE_FROM_TEMPLATE } from "@hexabase/hexabase-js/src/lib/graphql/datastore";
+import { ITEM_DETAIL, UPDATE_ITEM } from "@hexabase/hexabase-js/src/lib/graphql/item";
+import { DtItemDetail } from "@hexabase/hexabase-js/src/lib/types/item/response";
 
-export const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+interface dataStoreProps {
+  workspaceId?: string;
+  projectId?: string;
+  datastoreId: string | undefined;
+  payload?: any;
+  itemId?: any;
+}
 
-const api = axios.create({
-  baseURL: BASE_URL,
-  withCredentials: false,
-});
+const api = new HexabaseClient();
+const token = Cookies.get(COOKIES_KEY.ACCESS_TOKEN);
+if (token) {
+  api.setToken(token).then();
+}
 
-api.interceptors.request.use((config) => {
-  const token = Cookies.get(COOKIES_KEY.ACCESS_TOKEN);
-  config.headers.Authorization = "Bearer " + token;
+const initializeDatastore = async (props: dataStoreProps) => {
+  const {
+    workspaceId = process.env.NEXT_PUBLIC_WORKSPACE_ID,
+    projectId = process.env.NEXT_PUBLIC_PROJECT_ID,
+    datastoreId
+  } = props;
+  const workspace = api.workspace(workspaceId);
+  const project = await workspace.project(projectId);
+  return project.datastore(datastoreId);
+};
 
-  return config;
-});
+const getDatastoreItems = async (props: dataStoreProps): Promise<{ items: Item[]; totalCount: number }> => {
+  const { payload } = props;
+  const datastore = await initializeDatastore(props);
+  return datastore.itemsWithCount(payload);
+};
 
-api.interceptors.response.use(
-  (response) => {
-    return response.data;
-  },
-  (error: AxiosError) => {
-    if (error?.response?.status === HTTP_STATUS_CONSTANTS.UNAUTHENTICATED) {
-      // Cookies.remove(COOKIES_KEY.ACCESS_TOKEN);
-      // Cookies.remove(COOKIES_KEY.IS_WS_ADMIN);
-      // Router.push(APP_ROUTES.LOGIN);
-    }
-    if (error?.response?.status === HTTP_STATUS_CONSTANTS.NOT_FOUND) {
-      // Router.push(APP_ROUTES.PAGE_404);
-    }
-    return Promise.reject(error?.response || error);
-  }
-);
+const getDatastoreItem = async (props: dataStoreProps): Promise<DtItemDetail> => {
+  const { itemId, payload } = props;
+  const datastore = await initializeDatastore(props);
+  const defaultPayload = {
+    include_lookups: true,
+    use_display_id: true,
+    return_number_value: true,
+    format: "map",
+    include_linked_items: true
+  };
+  const params = {
+    datastoreId: datastore.id,
+    itemId: itemId,
+    projectId: datastore.project.id,
+    datastoreItemDetailParams: payload ?? defaultPayload
+  };
+  // return datastore.item(itemId);
+  return datastore.request(ITEM_DETAIL, params);
+};
 
-export { api };
+const createDatastoreItem = async (props: dataStoreProps) => {
+  const { payload } = props;
+  const datastore = await initializeDatastore(props);
+  return await datastore.request(CREATE_DATASTORE_FROM_TEMPLATE, { payload });
+};
+
+const updateDatastoreItem = async (props: dataStoreProps) => {
+  const { payload } = props;
+  const datastore = await initializeDatastore(props);
+  return await datastore.request(UPDATE_ITEM, { itemUpdatePayload: payload });
+};
+
+export {
+  api,
+  getDatastoreItems,
+  createDatastoreItem,
+  updateDatastoreItem,
+  getDatastoreItem
+};
