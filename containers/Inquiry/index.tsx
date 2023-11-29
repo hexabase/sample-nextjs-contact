@@ -3,7 +3,7 @@ import { Popconfirm, Tooltip } from "antd";
 import styles from "./styles.module.scss";
 import IconArrowLeft from "@/components/icons/IconArrowLeft";
 import IconArrowRight from "@/components/icons/IconArrowRight";
-// import { inquiryServiceApi } from "@/services/inquiry-service";
+import { inquiryServiceApi } from "@/services/inquiry-service";
 import { formatTime } from "@/utils";
 import { SPLASH_REVERSED_DATE_FORMAT } from "@/common/constants/dateFormat";
 import {
@@ -16,7 +16,7 @@ import { LIST_INQUIRIES_NAME_SPACES } from "@/common/constants/namespaces";
 import { APP_ROUTES } from "@/common/constants/routes";
 import { ListInquiriesDataType } from "@/common/param-types";
 import { ColumnsType } from "antd/es/table";
-// import { customersServiceApi } from "@/services/customer-service";
+import { customersServiceApi } from "@/services/customer-service";
 import { useCustomerIdStore } from "@/hooks/useCustomerId";
 import TableComponent from "@/components/CommonTable";
 import InquiryFilterComponent from "@/components/CommonTable/Filter/InquiryFilter";
@@ -30,8 +30,8 @@ function InquiryContainer() {
   useEffect(() => setTitle(PARAM_TOP_BAR_TITLE.INQUIRY_PAGE), []);
 
   const router = useRouter();
-  // const { getListInquiry, updateInquiry } = inquiryServiceApi;
-  // const { getListCustomer } = customersServiceApi;
+  const { getListInquiry, updateInquiry } = inquiryServiceApi;
+  const { getListCustomer } = customersServiceApi;
   const { globalCustomerId, setGlobalCustomerId } = useCustomerIdStore();
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -69,16 +69,16 @@ function InquiryContainer() {
     "return_number_value": true
   };
 
-  // useEffect(() => {
-  //   getListCustomer(dropdownPayload).then(r => {
-  //     const response: any = r;
-  //     setDropdownData(response);
-  //     if (customerId === "" || customerId === null || customerId === undefined) {
-  //       setCustomerId(response?.[0]?.id);
-  //     }
-  //     setIsLoadingDropdown(false);
-  //   });
-  // }, []);
+  useEffect(() => {
+    getListCustomer(dropdownPayload).then(r => {
+      const response: any = r;
+      setDropdownData(response);
+      if (customerId === "" || customerId === null || customerId === undefined) {
+        setCustomerId(response?.[0]?.id);
+      }
+      setIsLoadingDropdown(false);
+    });
+  }, []);
 
   const setDropdownData = (data: any) => {
     const options: any[] = [];
@@ -90,15 +90,15 @@ function InquiryContainer() {
     });
     setCustomerOptions(options);
   };
-  //
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   setIsFetching(false);
-  //   getListInquiry(payloadGet).then(r => {
-  //     setTableData(r);
-  //     setIsLoading(false);
-  //   });
-  // }, [payloadGet, isFetching]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    setIsFetching(false);
+    getListInquiry(payloadGet).then(r => {
+      setTableData(r);
+      setIsLoading(false);
+    });
+  }, [payloadGet, isFetching]);
 
   const handleUpdateStatus = (status: any, itemId: string | number) => {
     const statusObject = inquiryStatus.find((obj: any) => {
@@ -108,7 +108,7 @@ function InquiryContainer() {
       item: { status: statusObject?.id },
       is_force_update: true
     };
-    // updateInquiry(payload, itemId).then(_ => setIsFetching(true));
+    updateInquiry(payload, itemId).then(_ => setIsFetching(true));
   };
 
   const columns: ColumnsType<ListInquiriesDataType> = [

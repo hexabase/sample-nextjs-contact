@@ -7,7 +7,7 @@ import { HomePageDataType } from "@/common/param-types";
 import { TOP_PAGE_NAME_SPACES } from "@/common/constants/namespaces";
 import { Tooltip } from "antd";
 import { APP_ROUTES } from "@/common/constants/routes";
-// import { customersServiceApi } from "@/services/customer-service";
+import { customersServiceApi } from "@/services/customer-service";
 import { formatTime } from "@/utils";
 import { SPLASH_REVERSED_DATE_FORMAT } from "@/common/constants/dateFormat";
 import { useCustomerIdStore } from "@/hooks/useCustomerId";
@@ -42,15 +42,15 @@ const HomeContainer: FC = () => {
     return_number_value: true
   });
 
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   getListCustomer(payloadGet).then(r => {
-  //     setTableData(r);
-  //     setIsLoading(false);
-  //   });
-  // }, [payloadGet]);
+  useEffect(() => {
+    setIsLoading(true);
+    getListCustomer(payloadGet).then(r => {
+      setTableData(r);
+      setIsLoading(false);
+    });
+  }, [payloadGet]);
 
-  // const { getListCustomer } = customersServiceApi;
+  const { getListCustomer } = customersServiceApi;
 
   const columns: ColumnsType<HomePageDataType> = [
     {
