@@ -1,42 +1,33 @@
-import { DatePicker, Form, Select, Spin } from "antd";
+import { DatePicker, Form, Input } from "antd";
 import { TOP_PAGE_NAME_SPACES } from "@/common/constants/namespaces";
 import cx from "classnames";
 import styles from "@/containers/TopPage/styles.module.scss";
 import { AiOutlineSearch } from "react-icons/ai";
-import { filterOption } from "@/utils";
+import React from "react";
 
 interface Props {
   payloadGet: any,
   setPayloadGet: any,
-  dropdownOptions: any,
-  isLoadingDropdown: boolean,
 }
 
 const TopPageFilterComponent = (props: Props) => {
   const {
     payloadGet,
-    setPayloadGet,
-    dropdownOptions,
-    isLoadingDropdown
+    setPayloadGet
   } = props;
+
   const onFinish = (values: any) => {
     const conditions = [];
-    if (values?.customerId) {
+    if (values?.customerName) {
       conditions.push(
-        {
-          "conditions": [
-            { "id": "id", "search_value": [`${values?.customerId}`] }
-          ]
-        }
+        { "id": "company_name", "search_value": [`${values?.customerName}`] }
       );
     }
     if (values?.searchDate) {
+      const startOfDay = values?.searchDate.startOf("day").toISOString();
+      const endOfDay = values?.searchDate.endOf("day").toISOString();
       conditions.push(
-        {
-          "conditions": [
-            { "id": "updated_at", "search_value": [`${values?.searchDate}`] }
-          ]
-        }
+        { "id": "updated_at", "search_value": [`${startOfDay}`, `${endOfDay}`] }
       );
     }
     setPayloadGet({
@@ -50,23 +41,15 @@ const TopPageFilterComponent = (props: Props) => {
       className="flex justify-start items-center mb-5 gap-3"
       onFinish={onFinish}
     >
-      <div className="w-1/5">
-        <Spin spinning={isLoadingDropdown} >
-          <Form.Item
-            className="mb-0"
-            name="customerId"
-          >
-            <Select
-              showSearch
-              allowClear
-              optionFilterProp="children"
-              placeholder={TOP_PAGE_NAME_SPACES.COMPANY_NAME_FILTER}
-              filterOption={filterOption}
-              options={dropdownOptions}
-            />
-          </Form.Item>
-        </Spin>
-      </div>
+      <Form.Item
+        className="mb-0 w-1/5"
+        name="customerName"
+      >
+        <Input
+          allowClear
+          placeholder={TOP_PAGE_NAME_SPACES.COMPANY_NAME_FILTER}
+        />
+      </Form.Item>
       <Form.Item
         className="w-1/5 mb-0"
         name="searchDate"

@@ -26,26 +26,24 @@ const TableComponent = (props: Props) => {
   } = props;
   useEffect(() => {
     const tempPagination = { ...pagination };
-    tempPagination.total = tableData?.totalItems;
+    tempPagination.total = tableData?.totalCount;
     setPagination(tempPagination);
   }, [tableData]);
 
   const handleTableChange = (pagination: any, filters: any, sorter: { columnKey: string; order: string; }) => {
     // Check if the column has been sorted
-    console.log(sorter);
-    console.log(payloadGet);
     if (sorter && sorter?.columnKey) {
-      const sortFields = [];
+      let sortFields = {};
       if (sorter.order === "descend") {
-        sortFields.push({
-          id: sorter.columnKey !== "date" ? sorter.columnKey : "updated_at",
+        sortFields = {
+          id: sorter.columnKey !== "date" ? sorter.columnKey : "updateAt",
           order: "desc"
-        });
+        };
       } else if (sorter.order === "ascend") {
-        sortFields.push({
-          id: sorter.columnKey !== "date" ? sorter.columnKey : "updated_at",
+        sortFields = {
+          id: sorter.columnKey !== "date" ? sorter.columnKey : "updateAt",
           order: "asc"
-        });
+        };
       }
       setPayloadGet({
         ...payloadGet,

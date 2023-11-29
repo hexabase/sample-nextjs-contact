@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import ModalDelete from "@/components/ModalDelete";
 import CommentComponent from "@/components/Inquiry/CommentBox";
 import { useRouter } from "next/router";
-import { detailInquiryPayloadDataType } from "@/common/param-types";
+import { detailInquiryPayloadDataType, TFieldValueConvert } from "@/common/param-types";
 import { inquiryServiceApi } from "@/services/inquiry-service";
 import optionStatus from "@/common/constants/params";
 import { Form, Spin } from "antd";
@@ -13,6 +13,7 @@ import { APP_ROUTES } from "@/common/constants/routes";
 import FormControl from "@/components/Inquiry/FormControl";
 import BasicInquiryInformation from "@/components/Inquiry/BasicInquiryInformation";
 import InquiryFormData from "@/components/Inquiry/InquiryFormData";
+import { DtItemDetail } from "@hexabase/hexabase-js/src/lib/types/item/response";
 
 function DetailInquiry() {
   const [form] = Form.useForm();
@@ -39,43 +40,23 @@ function DetailInquiry() {
   const [priority, setPriority] = useState<any>();
   const [status, setStatus] = useState<any>(optionStatus[0]);
 
-  const parsedDate: any = moment(taskDueDate?.value);
+  const extractData = (requestData: DtItemDetail) => {
+    const dataFields = requestData?.getDatastoreItemDetails?.field_values;
+    const dataConvert: TFieldValueConvert = {};
 
-  function getFieldValue(dataFields: any[] | undefined, fieldId: string) {
-    return dataFields?.find((obj: any) => obj.field_id === fieldId);
-  }
+    Object.keys(dataFields).map(k => {
+      dataConvert[dataFields[k].field_id] = dataFields[k].value
+    })
+    setData(dataConvert);
 
-  const extractData = (requestData: any) => {
-    setData(requestData);
-    const dataFields = requestData?.field_values;
-    const {
-      system_due_date,
-      content,
-      task_due_date,
-      pic,
-      important,
-      urgency,
-      priority,
-      status
-    } = {
-      system_due_date: getFieldValue(dataFields, "system_due_date"),
-      content: getFieldValue(dataFields, "content"),
-      task_due_date: getFieldValue(dataFields, "task_due_date"),
-      pic: getFieldValue(dataFields, "pic"),
-      important: getFieldValue(dataFields, "important"),
-      urgency: getFieldValue(dataFields, "urgency"),
-      priority: getFieldValue(dataFields, "priority"),
-      status: getFieldValue(dataFields, "status")
-    };
-
-    setSystemDueDate(system_due_date);
-    setContent(content);
-    setTaskDueDate(task_due_date);
-    setPic(pic);
-    setImportant(important);
-    setUrgency(urgency);
-    setPriority(priority);
-    setStatus(status);
+    setSystemDueDate(dataConvert?.system_due_date);
+    setContent(dataConvert?.content);
+    setTaskDueDate(dataConvert?.task_due_date);
+    setPic(dataConvert?.pic);
+    setImportant(dataConvert?.important);
+    setUrgency(dataConvert?.urgency);
+    setPriority(dataConvert?.priority);
+    setStatus(dataConvert?.status);
   };
 
   useEffect(() => {
@@ -94,14 +75,20 @@ function DetailInquiry() {
       .finally(() => setIsLoading(false));
   }, [payloadGet, isFetching]);
 
+  //TODO: call api get author data
+  // useEffect(() => {
+  //   getUserInfo(userId)
+  //     .then(r => setAuthor(r))
+  // }, [userId]);
+
   useEffect(() => {
     form.setFieldsValue({
-      task_due_date: taskDueDate?.value ? moment(taskDueDate?.value, "YYYY-MM-DD") : undefined,
-      pic: pic?.value,
-      status: status?.value,
-      important: important?.value,
-      urgency: urgency?.value,
-      priority: priority?.value
+      task_due_date: taskDueDate ? moment(taskDueDate, "YYYY-MM-DD") : undefined,
+      pic: pic,
+      status: status,
+      important: important,
+      urgency: urgency,
+      priority: priority
     });
   }, [extractData]);
 

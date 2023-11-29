@@ -1,29 +1,35 @@
-import { api } from "./api";
-
-export const HEXABASE_APPLICATION_ID = process.env.NEXT_PUBLIC_PROJECT_ID;
-export const HEXABASE_INQUIRY_DATASTORE_ID = process.env.NEXT_PUBLIC_INQUIRY_DATASTORE_ID;
-export const HEXABASE_INQUIRIES_PATH = `applications/${HEXABASE_APPLICATION_ID}/datastores/${HEXABASE_INQUIRY_DATASTORE_ID}/items/search`;
-export const HEXABASE_CREATE_INQUIRY_PATH = `applications/${HEXABASE_APPLICATION_ID}/datastores/${HEXABASE_INQUIRY_DATASTORE_ID}/items/new`;
-export const HEXABASE_UPDATE_INQUIRY_PATH = `applications/${HEXABASE_APPLICATION_ID}/datastores/${HEXABASE_INQUIRY_DATASTORE_ID}/items/edit/`;
-export const HEXABASE_DETAIL_INQUIRY_PATH = `applications/${HEXABASE_APPLICATION_ID}/datastores/${HEXABASE_INQUIRY_DATASTORE_ID}/items/details/`;
-export const HEXABASE_DELETE_INQUIRY_PATH = `applications/${HEXABASE_APPLICATION_ID}/datastores/${HEXABASE_INQUIRY_DATASTORE_ID}/items/delete/`;
-
+import { getDatastoreItem, getDatastoreItems, updateDatastoreItem } from "./api";
+import { GetItemsParameters } from "@hexabase/hexabase-js/src/lib/types/item/input";
+import { detailInquiryPayloadDataType } from "@/common/param-types";
 
 class InquiryServiceApi {
-  getListInquiry = async (params: any) => {
-    return api.post(HEXABASE_INQUIRIES_PATH, { ...params });
+  getListInquiry = async (params: GetItemsParameters) => {
+    return getDatastoreItems({
+      datastoreId: process.env.NEXT_PUBLIC_INQUIRY_DATASTORE_ID,
+      payload: params
+    });
   };
   createInquiry = async (params: any) => {
-    return api.post(HEXABASE_CREATE_INQUIRY_PATH, { ...params });
+    return updateDatastoreItem({
+      datastoreId: process.env.NEXT_PUBLIC_INQUIRY_DATASTORE_ID,
+      payload: params
+    });
   };
   updateInquiry = async (params: any, itemId: any) => {
-    return api.post(`${HEXABASE_UPDATE_INQUIRY_PATH}${itemId}`, { ...params });
+    return updateDatastoreItem({
+      datastoreId: process.env.NEXT_PUBLIC_INQUIRY_DATASTORE_ID,
+      payload: params
+    });
   };
-  getInquiry = async (params: any, itemId: any) => {
-    return api.get(`${HEXABASE_DETAIL_INQUIRY_PATH}${itemId}`, { ...params });
+  getInquiry = async (payloadGet: detailInquiryPayloadDataType, itemId: string | string[] | undefined) => {
+    return getDatastoreItem({
+      datastoreId: process.env.NEXT_PUBLIC_INQUIRY_DATASTORE_ID,
+      itemId: itemId,
+      payload: payloadGet
+    });
   };
   deleteInquiry = async (params: any, itemId: any) => {
-    return api.delete(`${HEXABASE_DELETE_INQUIRY_PATH}${itemId}`, { data: params });
+    //TODO: add hxb sdk
   };
 }
 

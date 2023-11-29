@@ -7,7 +7,7 @@ import Router, { useRouter } from "next/router";
 import { APP_ROUTES } from "@/common/constants/routes";
 import styles from "../styles.module.scss";
 import { createInquiryPayloadDataType } from "@/common/param-types";
-import { inquiryServiceApi } from "@/services/inquiry-service";
+// import { inquiryServiceApi } from "@/services/inquiry-service";
 import { useCustomerIdStore } from "@/hooks/useCustomerId";
 import Cookies from "js-cookie";
 import { COOKIES_KEY } from "@/common/constants/cookie";
@@ -30,7 +30,7 @@ function CreateInquiryContainer() {
   const defaultStatus = inquiryStatus.find((obj: any) => {
     return !obj.previousStatus;
   });
-  const { createInquiry } = inquiryServiceApi;
+  // const { createInquiry } = inquiryServiceApi;
   const onFinish = (values: any) => {
     const payload = {
       ...payloadPost,
@@ -43,7 +43,7 @@ function CreateInquiryContainer() {
         user_id: Cookies.get(COOKIES_KEY.USER_ID)
       }
     };
-    createInquiry(payload).then(_ => router.push(APP_ROUTES.LIST_INQUIRY));
+    // createInquiry(payload).then(_ => router.push(APP_ROUTES.LIST_INQUIRY));
   };
   const onFinishFailed = (errorInfo: any) => {
     // form.resetFields()

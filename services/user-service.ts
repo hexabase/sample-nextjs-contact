@@ -1,9 +1,11 @@
-import { api } from './api';
-import { API_ROUTES } from "@/common/constants/routes";
+import { getDatastoreItem } from "./api";
 
 class UserServiceApi {
-  getUserInfo = async () => {
-    return api.get(API_ROUTES.USER_INFO);
+  getUserInfo = async (itemId: string | string[] | undefined) => {
+    return getDatastoreItem({
+      datastoreId: process.env.NEXT_PUBLIC_USER_DATASTORE_ID,
+      itemId: itemId
+    });
   };
 }
 
