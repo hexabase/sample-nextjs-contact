@@ -33,7 +33,7 @@ const TableComponent = (props: Props) => {
   const handleTableChange = (pagination: any, filters: any, sorter: { columnKey: string; order: string; }) => {
     // Check if the column has been sorted
     if (sorter && sorter?.columnKey) {
-      let sortFieldId = sorter.columnKey !== "date" ? sorter.columnKey : "updated_at";
+      const sortFieldId = sorter.columnKey !== "date" ? sorter.columnKey : "updated_at";
       let sortFieldOrder = "";
       if (sorter.order === "descend") {
         sortFieldOrder = "desc"
