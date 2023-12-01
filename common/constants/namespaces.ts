@@ -11,26 +11,6 @@ export const TOP_PAGE_NAME_SPACES = {
     title: "最終更新日",
     dataIndex: "date"
   },
-  UNFINISHED_TASKS: {
-    title: "未完了タスク",
-    dataIndex: "unfinished_tasks"
-  },
-  NEW_TASKS: {
-    title: "新規",
-    dataIndex: "new_tasks"
-  },
-  RECEIVED_TASKS: {
-    title: "受付",
-    dataIndex: "received_tasks"
-  },
-  IN_PROGRESS_TASKS: {
-    title: "作業中",
-    dataIndex: "in_progress_tasks"
-  },
-  CONFIRMED_TASKS: {
-    title: "確認",
-    dataIndex: "confirmed_tasks"
-  },
   COMPANY_NAME_FILTER: "企業名",
   UPDATED_AT_FILTER: "最終更新",
   SUBMIT_FILTER: "検索"

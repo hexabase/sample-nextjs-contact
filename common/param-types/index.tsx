@@ -16,11 +16,6 @@ export interface HomePageDataType {
   };
   updatedAt: string;
   createdAt: string;
-  unfinished_tasks?: number;
-  new_tasks?: number;
-  received_tasks?: number;
-  in_progress_tasks?: number;
-  confirmed_tasks?: number;
 }
 
 export interface ListInquiriesDataType {
