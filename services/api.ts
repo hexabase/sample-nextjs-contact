@@ -83,6 +83,7 @@ const deleteDatastoreItem = async (props: dataStoreProps) => {
 };
 
 export {
+  api,
   getDatastoreItems,
   createDatastoreItem,
   updateDatastoreItem,
