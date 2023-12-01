@@ -1,14 +1,17 @@
 import { COOKIES_KEY } from "@/common/constants/cookie";
 import Cookies from "js-cookie";
 import { HexabaseClient, Item } from "@hexabase/hexabase-js";
-import { CREATE_DATASTORE_FROM_TEMPLATE } from "@hexabase/hexabase-js/src/lib/graphql/datastore";
-import { ITEM_DETAIL, UPDATE_ITEM } from "@hexabase/hexabase-js/src/lib/graphql/item";
-import { DtItemDetail } from "@hexabase/hexabase-js/src/lib/types/item/response";
+import {
+  CREATE_NEW_ITEM,
+  DATASTORE_UPDATE_ITEM,
+  DELETE_ITEM,
+  ITEM_DETAIL
+} from "@hexabase/hexabase-js/src/lib/graphql/item";
 
 interface dataStoreProps {
   workspaceId?: string;
   projectId?: string;
-  datastoreId: string | undefined;
+  datastoreId?: string | undefined;
   payload?: any;
   itemId?: any;
 }
@@ -36,7 +39,7 @@ const getDatastoreItems = async (props: dataStoreProps): Promise<{ items: Item[]
   return datastore.itemsWithCount(payload);
 };
 
-const getDatastoreItem = async (props: dataStoreProps): Promise<DtItemDetail> => {
+const getDatastoreItem = async (props: dataStoreProps) => {
   const { itemId, payload } = props;
   const datastore = await initializeDatastore(props);
   const defaultPayload = {
@@ -59,19 +62,30 @@ const getDatastoreItem = async (props: dataStoreProps): Promise<DtItemDetail> =>
 const createDatastoreItem = async (props: dataStoreProps) => {
   const { payload } = props;
   const datastore = await initializeDatastore(props);
-  return await datastore.request(CREATE_DATASTORE_FROM_TEMPLATE, { payload });
+  return await datastore.request(CREATE_NEW_ITEM, { ...payload });
 };
 
 const updateDatastoreItem = async (props: dataStoreProps) => {
   const { payload } = props;
   const datastore = await initializeDatastore(props);
-  return await datastore.request(UPDATE_ITEM, { itemUpdatePayload: payload });
+  return await datastore.request(DATASTORE_UPDATE_ITEM, { ...payload });
+};
+
+const deleteDatastoreItem = async (props: dataStoreProps) => {
+  const { payload } = props;
+  const datastore = await initializeDatastore(props);
+  const item = await datastore.item();
+  const action = await item.action("DeleteItem");
+  return await datastore.request(DELETE_ITEM, {
+    ...payload,
+    deleteItemReq: { a_id: action.id }
+  });
 };
 
 export {
-  api,
   getDatastoreItems,
   createDatastoreItem,
   updateDatastoreItem,
+  deleteDatastoreItem,
   getDatastoreItem
 };

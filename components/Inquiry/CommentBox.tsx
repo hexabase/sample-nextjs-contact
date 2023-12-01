@@ -5,10 +5,9 @@ import { DEFAULT_PARAM_SEARCH } from "@/common/constants/params";
 import { commentServiceApi } from "@/services/comment-service";
 import { formatTime } from "@/utils";
 import { NON_SECOND_DATETIME_FORMAT } from "@/common/constants/dateFormat";
-import Cookies from "js-cookie";
-import { COOKIES_KEY } from "@/common/constants/cookie";
 import { DETAIL_INQUIRY_NAME_SPACES } from "@/common/constants/namespaces";
 import { GetItemsParameters } from "@hexabase/hexabase-js/src/lib/types/item/input";
+import { CreateItemParameters } from "@/common/param-types";
 
 interface Props {
   inquiryId?: any;
@@ -48,15 +47,18 @@ function CommentComponent(props: Props) {
   }, [payloadGet, isFetching]);
   const handleSendComment = () => {
     if (valueInput) {
-      const payload = {
-        item: {
-          inquiry_id: inquiryId,
-          user_id: Cookies.get(COOKIES_KEY.USER_ID),
-          content: valueInput
-        },
-        ensure_transaction: true
+      const payload: CreateItemParameters = {
+        payload: {
+          item: {
+            inquiry_id: inquiryId,
+            content: valueInput
+          }
+        }
       };
-      createComment(payload).then(r => setIsFetching(true));
+      createComment(payload).then(_ => {
+        setValueInput("");
+        setIsFetching(true);
+      });
     }
   };
   return (

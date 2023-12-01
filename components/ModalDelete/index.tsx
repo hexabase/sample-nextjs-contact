@@ -20,7 +20,7 @@ function ModalDelete(props: Props) {
 
   const router = useRouter();
   const handleSubmit = () => {
-    deleteInquiry({}, router.query.id)
+    deleteInquiry(router.query.id)
       .then(_ => router.push(APP_ROUTES.LIST_INQUIRY))
       .catch(err => {
         setShowModalDel?.(false);

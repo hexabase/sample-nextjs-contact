@@ -3,17 +3,17 @@ import React, { useEffect, useState } from "react";
 import ModalDelete from "@/components/ModalDelete";
 import CommentComponent from "@/components/Inquiry/CommentBox";
 import { useRouter } from "next/router";
-import { detailInquiryPayloadDataType, TFieldValueConvert } from "@/common/param-types";
+import { detailInquiryPayloadDataType, TFieldValueConvert, UpdateItemParameters } from "@/common/param-types";
 import { inquiryServiceApi } from "@/services/inquiry-service";
 import optionStatus from "@/common/constants/params";
 import { Form, Spin } from "antd";
-import moment from "moment";
 import { toast } from "react-toastify";
 import { APP_ROUTES } from "@/common/constants/routes";
 import FormControl from "@/components/Inquiry/FormControl";
 import BasicInquiryInformation from "@/components/Inquiry/BasicInquiryInformation";
 import InquiryFormData from "@/components/Inquiry/InquiryFormData";
 import { DtItemDetail } from "@hexabase/hexabase-js/src/lib/types/item/response";
+import dayjs from "dayjs";
 
 function DetailInquiry() {
   const [form] = Form.useForm();
@@ -38,6 +38,7 @@ function DetailInquiry() {
   const [important, setImportant] = useState<any>();
   const [urgency, setUrgency] = useState<any>();
   const [priority, setPriority] = useState<any>();
+  const [revNo, setRevNo] = useState<any>();
   const [status, setStatus] = useState<any>(optionStatus[0]);
 
   const extractData = (requestData: DtItemDetail) => {
@@ -45,9 +46,10 @@ function DetailInquiry() {
     const dataConvert: TFieldValueConvert = {};
 
     Object.keys(dataFields).map(k => {
-      dataConvert[dataFields[k].field_id] = dataFields[k].value
-    })
+      dataConvert[dataFields[k].field_id] = dataFields[k].value;
+    });
     setData(dataConvert);
+    setRevNo(requestData?.getDatastoreItemDetails?.rev_no);
 
     setSystemDueDate(dataConvert?.system_due_date);
     setContent(dataConvert?.content);
@@ -83,7 +85,7 @@ function DetailInquiry() {
 
   useEffect(() => {
     form.setFieldsValue({
-      task_due_date: taskDueDate ? moment(taskDueDate, "YYYY-MM-DD") : undefined,
+      task_due_date: taskDueDate ? dayjs(taskDueDate) : undefined,
       pic: pic,
       status: status,
       important: important,
@@ -95,18 +97,21 @@ function DetailInquiry() {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [showModalDel, setShowModalDel] = useState<boolean>(false);
   const onFinish = (values: any) => {
-    const payload = {
-      item: {
-        status: values?.status,
-        pic: values?.pic,
-        important: values?.important,
-        urgency: values?.urgency,
-        priority: values?.priority,
-        task_due_date: values?.task_due_date
+    const payload: UpdateItemParameters = {
+      itemActionParameters: {
+        item: {
+          status: values?.status,
+          pic: values?.pic,
+          important: values?.important,
+          urgency: values?.urgency,
+          priority: values?.priority,
+          task_due_date: values?.task_due_date
+        },
+        rev_no: revNo
       },
-      is_force_update: true
+      itemId: router.query.id
     };
-    updateInquiry(payload, router.query.id).then(r => {
+    updateInquiry(payload).then(r => {
       setIsEdit(false);
       setIsFetching(!isFetching);
     });
@@ -140,7 +145,9 @@ function DetailInquiry() {
         />
       </Spin>
 
-      <CommentComponent inquiryId={router.query.id} pic={pic?.value} />
+      <CommentComponent
+        inquiryId={router.query.id} pic={pic?.value}
+      />
       <ModalDelete
         setShowModalDel={setShowModalDel}
         showModalDel={showModalDel}
