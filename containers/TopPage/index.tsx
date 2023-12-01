@@ -60,7 +60,7 @@ const HomeContainer: FC = () => {
       showSorterTooltip: false,
       sorter: true,
       ellipsis: true,
-      width: "12.5%",
+      width: "15%",
       render: (_, record) => (
         <button className="w-full text-center" onClick={() => onClickRow(record)}>
           {record?.fields?.id}
@@ -74,10 +74,10 @@ const HomeContainer: FC = () => {
       showSorterTooltip: false,
       sorter: true,
       ellipsis: true,
-      width: "12.5%",
+      width: "60%",
       render: (text, record) => (
         <Tooltip title={text}>
-          <button onClick={() => onClickRow(record)}>
+          <button className="w-full text-left" onClick={() => onClickRow(record)}>
             {record?.fields?.company_name}
           </button>
         </Tooltip>
@@ -90,62 +90,12 @@ const HomeContainer: FC = () => {
       showSorterTooltip: false,
       sorter: true,
       ellipsis: true,
-      width: "12.5%",
+      width: "25%",
       render: (_, record) => (<span className="flex justify-center w-full">{
         record?.updatedAt
           ? formatTime(record?.updatedAt, SPLASH_REVERSED_DATE_FORMAT)
           : formatTime(record?.createdAt, SPLASH_REVERSED_DATE_FORMAT)
       }</span>)
-    },
-    {
-      title: TOP_PAGE_NAME_SPACES.UNFINISHED_TASKS.title,
-      dataIndex: TOP_PAGE_NAME_SPACES.UNFINISHED_TASKS.dataIndex,
-      key: TOP_PAGE_NAME_SPACES.UNFINISHED_TASKS.dataIndex,
-      showSorterTooltip: false,
-      sorter: true,
-      ellipsis: true,
-      width: "12.5%",
-      render: (text) => (<span className="flex justify-center w-full">{text ? text : "-"}</span>)
-    },
-    {
-      title: TOP_PAGE_NAME_SPACES.NEW_TASKS.title,
-      dataIndex: TOP_PAGE_NAME_SPACES.NEW_TASKS.dataIndex,
-      key: TOP_PAGE_NAME_SPACES.NEW_TASKS.dataIndex,
-      showSorterTooltip: false,
-      sorter: true,
-      ellipsis: true,
-      width: "12.5%",
-      render: (text) => (<span className="flex justify-center w-full">{text ? text : "-"}</span>)
-    },
-    {
-      title: TOP_PAGE_NAME_SPACES.RECEIVED_TASKS.title,
-      dataIndex: TOP_PAGE_NAME_SPACES.RECEIVED_TASKS.dataIndex,
-      key: TOP_PAGE_NAME_SPACES.RECEIVED_TASKS.dataIndex,
-      showSorterTooltip: false,
-      sorter: true,
-      ellipsis: true,
-      width: "12.5%",
-      render: (text) => (<span className="flex justify-center w-full">{text ? text : "-"}</span>)
-    },
-    {
-      title: TOP_PAGE_NAME_SPACES.IN_PROGRESS_TASKS.title,
-      dataIndex: TOP_PAGE_NAME_SPACES.IN_PROGRESS_TASKS.dataIndex,
-      key: TOP_PAGE_NAME_SPACES.IN_PROGRESS_TASKS.dataIndex,
-      showSorterTooltip: false,
-      sorter: true,
-      ellipsis: true,
-      width: "12.5%",
-      render: (text) => (<span className="flex justify-center w-full">{text ? text : "-"}</span>)
-    },
-    {
-      title: TOP_PAGE_NAME_SPACES.CONFIRMED_TASKS.title,
-      dataIndex: TOP_PAGE_NAME_SPACES.CONFIRMED_TASKS.dataIndex,
-      key: TOP_PAGE_NAME_SPACES.CONFIRMED_TASKS.dataIndex,
-      showSorterTooltip: false,
-      sorter: true,
-      ellipsis: true,
-      width: "12.5%",
-      render: (text) => (<span className="flex justify-center w-full">{text ? text : "-"}</span>)
     }
   ];
 
