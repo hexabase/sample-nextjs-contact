@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { loginSchema } from "@/common/form-schemas";
 import ButtonComponent from "../../../components/buttons";
 import FormItem from "@/components/form-items/FormItem";
 import { PasswordInput } from "@/components/inputs/PasswordInput";
 import { TextInput } from "@/components/inputs/TextInput";
-import useAuth from "@/hooks/useAuth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/router";
 import { FormProvider, useForm } from "react-hook-form";
@@ -18,11 +17,9 @@ import { useHexabase, useHexabaseStore } from "@/hooks/useHexabase";
 
 const FormLogin: React.FC = () => {
   const { setClientHxb } = useHexabaseStore();
-  const {
-    loginMutation: { mutate, isLoading }
-  } = useAuth();
 
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const methods = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -34,6 +31,7 @@ const FormLogin: React.FC = () => {
   const { handleSubmit } = methods;
 
   const onSubmit = async (values: any) => {
+    setIsLoading(true);
     try {
       const client = await useHexabase(values?.email, values?.password);
       if (client) {
@@ -48,6 +46,8 @@ const FormLogin: React.FC = () => {
       }
     } catch (_) {
       toast.error("Wrong email or password");
+    } finally {
+      setIsLoading(false);
     }
   };
 

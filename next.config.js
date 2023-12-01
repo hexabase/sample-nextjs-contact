@@ -6,6 +6,16 @@ const nextConfig = {
   i18n,
   reactStrictMode: false,
   output: "standalone",
+  transpilePackages: [
+    "antd",
+    "rc-util",
+    "@ant-design/icons",
+    "@ant-design/icons-svg",
+    "rc-pagination",
+    "rc-picker",
+    "rc-tree",
+    "rc-table",
+  ],
   publicRuntimeConfig: {
     NEXT_PUBLIC_PORT: process.env.NEXT_PUBLIC_PORT,
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
