@@ -1,4 +1,4 @@
-import { getDatastoreItems } from "./api";
+import { createDatastoreItem, getDatastoreItems } from "./api";
 
 class CommentServiceApi {
   getListComments = async (params: any) => {
@@ -8,7 +8,13 @@ class CommentServiceApi {
     });
   };
   createComment = async (params: any) => {
-    //TODO: add hxb sdk
+    return createDatastoreItem({
+      payload: {
+        ...params,
+        projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
+        datastoreId: process.env.NEXT_PUBLIC_COMMENT_DATASTORE_ID
+      }
+    });
   };
 }
 

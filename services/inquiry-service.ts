@@ -1,4 +1,10 @@
-import { getDatastoreItem, getDatastoreItems, updateDatastoreItem } from "./api";
+import {
+  createDatastoreItem,
+  deleteDatastoreItem,
+  getDatastoreItem,
+  getDatastoreItems,
+  updateDatastoreItem
+} from "./api";
 import { GetItemsParameters } from "@hexabase/hexabase-js/src/lib/types/item/input";
 import { detailInquiryPayloadDataType } from "@/common/param-types";
 
@@ -10,15 +16,21 @@ class InquiryServiceApi {
     });
   };
   createInquiry = async (params: any) => {
-    return updateDatastoreItem({
-      datastoreId: process.env.NEXT_PUBLIC_INQUIRY_DATASTORE_ID,
-      payload: params
+    return createDatastoreItem({
+      payload: {
+        ...params,
+        projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
+        datastoreId: process.env.NEXT_PUBLIC_INQUIRY_DATASTORE_ID,
+      }
     });
   };
-  updateInquiry = async (params: any, itemId: any) => {
+  updateInquiry = async (params: any) => {
     return updateDatastoreItem({
-      datastoreId: process.env.NEXT_PUBLIC_INQUIRY_DATASTORE_ID,
-      payload: params
+      payload: {
+        ...params,
+        projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
+        datastoreId: process.env.NEXT_PUBLIC_INQUIRY_DATASTORE_ID,
+      }
     });
   };
   getInquiry = async (payloadGet: detailInquiryPayloadDataType, itemId: string | string[] | undefined) => {
@@ -28,8 +40,15 @@ class InquiryServiceApi {
       payload: payloadGet
     });
   };
-  deleteInquiry = async (params: any, itemId: any) => {
-    //TODO: add hxb sdk
+  deleteInquiry = async (itemId: any) => {
+    return deleteDatastoreItem({
+      datastoreId: process.env.NEXT_PUBLIC_INQUIRY_DATASTORE_ID,
+      payload: {
+        projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
+        datastoreId: process.env.NEXT_PUBLIC_INQUIRY_DATASTORE_ID,
+        itemId: itemId,
+      }
+    })
   };
 }
 

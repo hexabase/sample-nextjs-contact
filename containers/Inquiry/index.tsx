@@ -14,7 +14,7 @@ import {
 } from "@/common/constants/params";
 import { LIST_INQUIRIES_NAME_SPACES } from "@/common/constants/namespaces";
 import { APP_ROUTES } from "@/common/constants/routes";
-import { ListInquiriesDataType } from "@/common/param-types";
+import { ListInquiriesDataType, UpdateItemParameters } from "@/common/param-types";
 import { ColumnsType } from "antd/es/table";
 import { customersServiceApi } from "@/services/customer-service";
 import { useCustomerIdStore } from "@/hooks/useCustomerId";
@@ -74,7 +74,7 @@ function InquiryContainer() {
       const response: any = r;
       setDropdownData(response);
       if (customerId === "" || customerId === null || customerId === undefined) {
-        setCustomerId(response?.[0]?.id);
+        setGlobalCustomerId(response?.items?.[0]?.id);
       }
       setIsLoadingDropdown(false);
     });
@@ -100,15 +100,18 @@ function InquiryContainer() {
     });
   }, [payloadGet, isFetching]);
 
-  const handleUpdateStatus = (status: any, itemId: string | number) => {
+  const handleUpdateStatus = (status: any, record: any) => {
     const statusObject = inquiryStatus.find((obj: any) => {
       return obj.display === status;
     });
-    const payload = {
-      item: { status: statusObject?.id },
-      is_force_update: true
+    const payload: UpdateItemParameters = {
+      itemActionParameters: {
+        item: { status: statusObject?.id },
+        rev_no: record?.revNo
+      },
+      itemId: record?.id
     };
-    updateInquiry(payload, itemId).then(_ => setIsFetching(true));
+    updateInquiry(payload).then(_ => setIsFetching(true));
   };
 
   const columns: ColumnsType<ListInquiriesDataType> = [
@@ -178,7 +181,7 @@ function InquiryContainer() {
                   {currentInquiryStatus?.previousStatus && (
                     <div
                       className="cursor-pointer flex gap-2 text-[#808080] items-center hover:text-blue-300"
-                      onClick={() => handleUpdateStatus(currentInquiryStatus?.previousStatus, record.i_id)}
+                      onClick={() => handleUpdateStatus(currentInquiryStatus?.previousStatus, record)}
                     >
                       <IconArrowLeft width={28} height={28} />
                       <span className="text-lg text-black hover:text-blue-300">
@@ -189,7 +192,7 @@ function InquiryContainer() {
                   {currentInquiryStatus?.nextStatus && (
                     <div
                       className="cursor-pointer flex gap-2 text-[#808080] items-center hover:text-blue-300"
-                      onClick={() => handleUpdateStatus(currentInquiryStatus?.nextStatus, record.i_id)}
+                      onClick={() => handleUpdateStatus(currentInquiryStatus?.nextStatus, record)}
                     >
                       <IconArrowRight width={28} height={28} />
                       <span className="text-lg text-black hover:text-blue-300">

@@ -1,5 +1,7 @@
 // Define Interface here
 
+import { ItemActionParameters } from "@hexabase/hexabase-js";
+
 export interface DefaultSearchList {
   page: number;
   per_page: number;
@@ -11,7 +13,7 @@ export interface HomePageDataType {
     id: string | number;
     company_name: string;
     status: string;
-  }
+  };
   updatedAt: string;
   createdAt: string;
   unfinished_tasks?: number;
@@ -53,3 +55,14 @@ export interface createInquiryPayloadDataType {
 export type TFieldValueConvert = {
   [key: string]: any;
 };
+
+export type UpdateItemParameters = {
+  itemActionParameters: ItemActionParameters,
+  itemId: string | string[] | undefined,
+}
+
+export type CreateItemParameters = {
+  payload: {
+    item: {}
+  },
+}

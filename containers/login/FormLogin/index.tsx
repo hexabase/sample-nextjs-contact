@@ -33,36 +33,31 @@ const FormLogin: React.FC = () => {
 
   const { handleSubmit } = methods;
 
-  const onSuccess = (res: any) => {
-    if (res?.tokenHxb) {
-      Cookies.set(COOKIES_KEY.ACCESS_TOKEN, res?.tokenHxb);
-      router.push(APP_ROUTES.HOME).then();
-    }
-  };
-
-  const onError = (error: any) => {
-    toast.error(error?.data?.message || "Wrong email or password");
-  };
-
   const onSubmit = async (values: any) => {
-    let client = await useHexabase(values?.email, values?.password);
-    if (client) {
-      setClientHxb(client);
-      Cookies.set(COOKIES_KEY.ACCESS_TOKEN, client.tokenHxb);
-      Cookies.set(COOKIES_KEY.USERNAME, client?.currentUser?.userName ?? "");
-      Cookies.set(COOKIES_KEY.EMAIL, client?.currentUser?.email ?? "");
-      Cookies.set(COOKIES_KEY.USER_ID, client?.currentUser?.id ?? "");
-      Cookies.set(COOKIES_KEY.PROFILE_PICTURE, client?.currentUser?.profilePicture ?? "");
-      await router.push(APP_ROUTES.HOME);
+    try {
+      const client = await useHexabase(values?.email, values?.password);
+      if (client) {
+        setClientHxb(client);
+        Cookies.set(COOKIES_KEY.ACCESS_TOKEN, client.tokenHxb);
+        Cookies.set(COOKIES_KEY.ACCESS_TOKEN, client.tokenHxb);
+        Cookies.set(COOKIES_KEY.USERNAME, client?.currentUser?.userName ?? "");
+        Cookies.set(COOKIES_KEY.EMAIL, client?.currentUser?.email ?? "");
+        Cookies.set(COOKIES_KEY.USER_ID, client?.currentUser?.id ?? "");
+        Cookies.set(COOKIES_KEY.PROFILE_PICTURE, client?.currentUser?.profilePicture ?? "");
+        await router.push(APP_ROUTES.HOME);
+      }
+    } catch (_) {
+      toast.error("Wrong email or password");
     }
-
-    // return mutate(values, { onSuccess, onError });
   };
 
   return (
     <div className="">
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit(onSubmit)} className="mb-6">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="mb-6"
+        >
           <FormItem name="email" containerClassName="mb-6">
             <TextInput placeholder={LOGIN_NAME_SPACES.EMAIL_PLACEHOLDER} />
           </FormItem>

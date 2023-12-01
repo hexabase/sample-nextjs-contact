@@ -30,19 +30,21 @@ const InquiryFilterComponent = (props: Props) => {
   const [form] = Form.useForm();
 
   useEffect(() => {
-    form.setFieldsValue({
-      customerId: customerId
-    });
+    if (customerId) {
+      form.setFieldsValue({
+        customerId: customerId
+      });
+    }
   }, [customerId]);
   const handleFinish = (
     values: { customerId: any; statusDropdown: any[]; keywordSearch: any; }
   ) => {
     const conditions = [];
+    conditions.push(
+      { "id": "customer_id", "search_value": [`${values?.customerId ?? ""}`] }
+    );
     if (values?.customerId) {
       setCustomerId(values?.customerId);
-      conditions.push(
-        { "id": "customer_id", "search_value": [`${values?.customerId}`] }
-      );
     }
     if (values?.statusDropdown) {
       const statusConditions: any[] = [];
