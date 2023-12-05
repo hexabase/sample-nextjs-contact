@@ -1,8 +1,8 @@
 'use client';
 
-import TopPageContainer from '@/containers/top_pages';
 import { useTranslation } from '@/common/libs/i18n/client';
 import PrivateLayout from '@/components/layouts/PrivateLayout';
+import InquiryContainer from '@/containers/inquiries';
 
 export default function HomePage({
   params: { lng },
@@ -12,7 +12,7 @@ export default function HomePage({
   const { t } = useTranslation(lng, 'common');
   return (
     <PrivateLayout>
-      <TopPageContainer />
+      <InquiryContainer />
     </PrivateLayout>
   );
 }

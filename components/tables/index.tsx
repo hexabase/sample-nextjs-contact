@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { Table } from "antd";
-import cx from "classnames";
-import styles from "./table.module.scss";
+import React, { useEffect, useState } from 'react';
+import { Table } from 'antd';
+import cx from 'classnames';
+import styles from './table.module.scss';
 
 const CustomTable: React.FC<{
   columns: any[];
@@ -17,17 +17,17 @@ const CustomTable: React.FC<{
   setLimit?: any;
   onChange?: any;
 }> = ({
-        columns,
-        data,
-        showSizeChanger,
-        tableName,
-        showQuickJumper,
-        pagination,
-        position,
-        setPage,
-        setLimit,
-        onChange
-      }) => {
+  columns,
+  data,
+  showSizeChanger,
+  tableName,
+  showQuickJumper,
+  pagination,
+  position,
+  setPage,
+  setLimit,
+  onChange,
+}) => {
   const [dataSource, setDataSource] = useState<any[]>([]);
 
   useEffect(() => {
@@ -39,22 +39,22 @@ const CustomTable: React.FC<{
   return (
     <div>
       <Table
-        className={cx("antd-custom-table", styles.custom_table)}
+        className={cx('antd-custom-table', styles.custom_table)}
         columns={columns}
-        rowKey={(record, index) => (tableName ? tableName + "-" : "") + index}
+        rowKey={(record) => record?.fields?.id}
         pagination={{
           showSizeChanger: !!showSizeChanger,
           showQuickJumper: !!showQuickJumper,
           defaultPageSize: pagination ? pagination.limit : 10,
           current: pagination ? pagination.page : 1,
           total: pagination ? pagination.total : data ? data.length : 0,
-          pageSizeOptions: ["10", "20", "50"],
-          position: [position ? position : "bottomRight"],
-          size: "default",
+          pageSizeOptions: ['10', '20', '50'],
+          position: [position ? position : 'bottomRight'],
+          size: 'default',
           onChange: (pNumber, pSize) => {
             if (pagination.limit) setLimit(pSize);
             if (pagination.page) setPage(pNumber);
-          }
+          },
         }}
         onChange={onChange}
         dataSource={dataSource}

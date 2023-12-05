@@ -3,6 +3,9 @@ export const DEFAULT_PARAM_SEARCH = {
   PER_PAGE: 10
 }
 
+export const DEFAULT_SIZE = 10;
+export const PAGE_SIZE_OPTIONS = ['5', '10', '20', '30'];
+
 export const FADED = {
   from: {
     opacity: 0,

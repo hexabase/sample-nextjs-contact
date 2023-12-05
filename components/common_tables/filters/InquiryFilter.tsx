@@ -1,21 +1,21 @@
-import { Button, Form, Input, Select, Spin } from "antd";
-import styles from "@/components/common_tables/styles.module.scss";
-import { LIST_INQUIRIES_NAME_SPACES } from "@/common/constants/namespaces";
-import optionStatus from "@/common/constants/params";
-import IconSearch from "@/components/icons/IconSearch";
-import Router from "next/router";
-import { APP_ROUTES } from "@/common/constants/routes";
-import IconPlus from "@/components/icons/IconPlus";
-import React, { useEffect } from "react";
-import { filterOption } from "@/utils";
+import { Button, Form, Input, Select, Spin } from 'antd';
+import styles from '@/components/common_tables/styles.module.scss';
+import { LIST_INQUIRIES_NAME_SPACES } from '@/common/constants/namespaces';
+import optionStatus from '@/common/constants/params';
+import IconSearch from '@/components/icons/IconSearch';
+import { APP_ROUTES } from '@/common/constants/routes';
+import IconPlus from '@/components/icons/IconPlus';
+import React, { useEffect } from 'react';
+import { filterOption } from '@/common/libs/functions';
+import { useRouter } from 'next/navigation';
 
 interface Props {
-  payloadGet: any,
-  setPayloadGet: any,
-  setCustomerId: any,
-  customerId: any,
-  customerOptions: any,
-  isLoadingDropdown: boolean,
+  payloadGet: any;
+  setPayloadGet: any;
+  setCustomerId: any;
+  customerId: any;
+  customerOptions: any;
+  isLoadingDropdown: boolean;
 }
 
 const InquiryFilterComponent = (props: Props) => {
@@ -25,24 +25,29 @@ const InquiryFilterComponent = (props: Props) => {
     setCustomerId,
     customerId,
     customerOptions,
-    isLoadingDropdown
+    isLoadingDropdown,
   } = props;
   const [form] = Form.useForm();
+
+  const router = useRouter();
 
   useEffect(() => {
     if (customerId) {
       form.setFieldsValue({
-        customerId: customerId
+        customerId: customerId,
       });
     }
   }, [customerId]);
-  const handleFinish = (
-    values: { customerId: any; statusDropdown: any[]; keywordSearch: any; }
-  ) => {
+  const handleFinish = (values: {
+    customerId: any;
+    statusDropdown: any[];
+    keywordSearch: any;
+  }) => {
     const conditions = [];
-    conditions.push(
-      { "id": "customer_id", "search_value": [`${values?.customerId ?? ""}`] }
-    );
+    conditions.push({
+      id: 'customer_id',
+      search_value: [`${values?.customerId ?? ''}`],
+    });
     if (values?.customerId) {
       setCustomerId(values?.customerId);
     }
@@ -51,24 +56,23 @@ const InquiryFilterComponent = (props: Props) => {
       values?.statusDropdown.forEach((item: any) => {
         statusConditions.push(item);
       });
-      conditions.push(
-        {
-          "id": "status",
-          "data_type": "select",
-          "search_value": statusConditions
-        }
-      );
+      conditions.push({
+        id: 'status',
+        data_type: 'select',
+        search_value: statusConditions,
+      });
     }
     if (values?.keywordSearch) {
-      conditions.push(
-        { "id": "Title", "search_value": [`${values?.keywordSearch}`] }
-      );
+      conditions.push({
+        id: 'Title',
+        search_value: [`${values?.keywordSearch}`],
+      });
     }
 
     setPayloadGet({
       ...payloadGet,
       conditions: conditions,
-      use_or_condition: false
+      use_or_condition: false,
     });
   };
   return (
@@ -94,9 +98,7 @@ const InquiryFilterComponent = (props: Props) => {
           </Form.Item>
         </Spin>
         <Form.Item name="keywordSearch">
-          <Input
-            placeholder={LIST_INQUIRIES_NAME_SPACES.SEARCH_PLACEHOLDER}
-          />
+          <Input placeholder={LIST_INQUIRIES_NAME_SPACES.SEARCH_PLACEHOLDER} />
         </Form.Item>
         <Form.Item name="statusDropdown">
           <Select
@@ -109,20 +111,18 @@ const InquiryFilterComponent = (props: Props) => {
           />
         </Form.Item>
         <Form.Item>
-          <Button
-            type="default"
-            className={styles.btnSearch}
-            htmlType="submit"
-          >
+          <Button type="default" className={styles.btnSearch} htmlType="submit">
             <IconSearch />
             {LIST_INQUIRIES_NAME_SPACES.BTN_SEARCH}
           </Button>
         </Form.Item>
       </Form>
       <div>
-        <Button className={styles.btnNew} size="large" onClick={
-          () => Router.push(APP_ROUTES.CREATE_INQUIRY)
-        }>
+        <Button
+          className={styles.btnNew}
+          size="large"
+          onClick={() => router.push(APP_ROUTES.CREATE_INQUIRY)}
+        >
           <IconPlus />
           {LIST_INQUIRIES_NAME_SPACES.BTN_CREATE}
         </Button>

@@ -1,32 +1,34 @@
-import { useTopBarStore } from "@/hooks/useTopBar";
-import React, { useEffect, useState } from "react";
-import ModalDelete from "@/components/ModalDelete";
-import CommentComponent from "@/components/Inquiry/CommentBox";
-import { useRouter } from "next/router";
-import { detailInquiryPayloadDataType, TFieldValueConvert, UpdateItemParameters } from "../../../common/libs/types";
-import { inquiryServiceApi } from "@/services/inquiry-service";
-import optionStatus from "@/common/constants/params";
-import { Form, Spin } from "antd";
-import { toast } from "react-toastify";
-import { APP_ROUTES } from "@/common/constants/routes";
-import FormControl from "@/components/Inquiry/FormControl";
-import BasicInquiryInformation from "@/components/Inquiry/BasicInquiryInformation";
-import InquiryFormData from "@/components/Inquiry/InquiryFormData";
-import { DtItemDetail } from "@hexabase/hexabase-js/src/lib/types/item/response";
-import dayjs from "dayjs";
+import { useTopBarStore } from '@/hooks/useTopBar';
+import React, { useEffect, useState } from 'react';
+import ModalDelete from '@/components/ModalDelete';
+import CommentComponent from '@/components/Inquiry/CommentBox';
+import { useRouter } from 'next/navigation';
+import {
+  detailInquiryPayloadDataType,
+  TFieldValueConvert,
+  UpdateItemParameters,
+} from '../../../common/libs/types';
+import { inquiryServiceApi } from '@/services/inquiry-service';
+import optionStatus from '@/common/constants/params';
+import { Form, Spin } from 'antd';
+import { toast } from 'react-toastify';
+import { APP_ROUTES } from '@/common/constants/routes';
+import FormControl from '@/components/Inquiry/FormControl';
+import BasicInquiryInformation from '@/components/Inquiry/BasicInquiryInformation';
+import InquiryFormData from '@/components/Inquiry/InquiryFormData';
+import { DtItemDetail } from '@hexabase/hexabase-js/src/lib/types/item/response';
+import dayjs from 'dayjs';
 
-function DetailInquiry() {
+function DetailInquiry({ id }: { id: string }) {
   const [form] = Form.useForm();
   const { setTitle } = useTopBarStore();
   useEffect(() => setTitle(null), []);
   const router = useRouter();
   const { getInquiry, updateInquiry } = inquiryServiceApi;
-  const [
-    payloadGet, setPayloadGet
-  ] = useState<detailInquiryPayloadDataType>({
-    format: "map",
+  const [payloadGet, setPayloadGet] = useState<detailInquiryPayloadDataType>({
+    format: 'map',
     include_linked_items: true,
-    include_lookups: true
+    include_lookups: true,
   });
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isFetching, setIsFetching] = useState<boolean>(false);
@@ -45,7 +47,7 @@ function DetailInquiry() {
     const dataFields = requestData?.getDatastoreItemDetails?.field_values;
     const dataConvert: TFieldValueConvert = {};
 
-    Object.keys(dataFields).map(k => {
+    Object.keys(dataFields).map((k) => {
       dataConvert[dataFields[k].field_id] = dataFields[k].value;
     });
     setData(dataConvert);
@@ -63,16 +65,17 @@ function DetailInquiry() {
 
   useEffect(() => {
     setIsLoading(true);
-    getInquiry(payloadGet, router.query.id)
-      .then(r => extractData(r))
+    getInquiry(payloadGet, id)
+      .then((r) => extractData(r))
       .catch((err) => {
         toast.error(
-          err?.data?.errors[0]?.description || "Something went wrong", {
+          err?.data?.errors[0]?.description || 'Something went wrong',
+          {
             position: toast.POSITION.TOP_CENTER,
-            autoClose: 1000
+            autoClose: 1000,
           }
         );
-        router.push(APP_ROUTES.LIST_INQUIRY).then();
+        router.push(APP_ROUTES.LIST_INQUIRY);
       })
       .finally(() => setIsLoading(false));
   }, [payloadGet, isFetching]);
@@ -90,7 +93,7 @@ function DetailInquiry() {
       status: status,
       important: important,
       urgency: urgency,
-      priority: priority
+      priority: priority,
     });
   }, [extractData]);
 
@@ -105,13 +108,13 @@ function DetailInquiry() {
           important: values?.important,
           urgency: values?.urgency,
           priority: values?.priority,
-          task_due_date: values?.task_due_date
+          task_due_date: values?.task_due_date,
         },
-        rev_no: revNo
+        rev_no: revNo,
       },
-      itemId: router.query.id
+      itemId: id,
     };
-    updateInquiry(payload).then(r => {
+    updateInquiry(payload).then((r) => {
       setIsEdit(false);
       setIsFetching(!isFetching);
     });
@@ -138,19 +141,14 @@ function DetailInquiry() {
           content={content}
         />
 
-        <InquiryFormData
-          isEdit={isEdit}
-          form={form}
-          onFinish={onFinish}
-        />
+        <InquiryFormData isEdit={isEdit} form={form} onFinish={onFinish} />
       </Spin>
 
-      <CommentComponent
-        inquiryId={router.query.id} pic={pic?.value}
-      />
+      <CommentComponent inquiryId={id} pic={pic?.value} />
       <ModalDelete
         setShowModalDel={setShowModalDel}
         showModalDel={showModalDel}
+        id={id}
       />
     </>
   );

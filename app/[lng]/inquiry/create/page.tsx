@@ -1,10 +1,10 @@
 'use client';
 
-import TopPageContainer from '@/containers/top_pages';
 import { useTranslation } from '@/common/libs/i18n/client';
 import PrivateLayout from '@/components/layouts/PrivateLayout';
+import CreateInquiryContainer from '@/containers/inquiries/CreateInquiry';
 
-export default function HomePage({
+export default function CreateInquiryPage({
   params: { lng },
 }: {
   params: { lng: string };
@@ -12,7 +12,7 @@ export default function HomePage({
   const { t } = useTranslation(lng, 'common');
   return (
     <PrivateLayout>
-      <TopPageContainer />
+      <CreateInquiryContainer />
     </PrivateLayout>
   );
 }

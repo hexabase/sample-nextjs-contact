@@ -1,3 +1,4 @@
+import { detailInquiryPayloadDataType } from "@/common/libs/types";
 import {
   createDatastoreItem,
   deleteDatastoreItem,
@@ -6,7 +7,6 @@ import {
   updateDatastoreItem
 } from "./api";
 import { GetItemsParameters } from "@hexabase/hexabase-js/src/lib/types/item/input";
-import { detailInquiryPayloadDataType } from "@/common/param-types";
 
 class InquiryServiceApi {
   getListInquiry = async (params: GetItemsParameters) => {

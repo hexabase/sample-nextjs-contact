@@ -1,25 +1,25 @@
-import { inquiryStatus, PARAM_TOP_BAR_TITLE } from "@/common/constants/params";
-import { useTopBarStore } from "@/hooks/useTopBar";
-import React, { useEffect, useState } from "react";
-import { Button, Col, DatePicker, Form, Input, Row, Spin } from "antd";
-import { CREATE_INQUIRY_NAME_SPACES } from "@/common/constants/namespaces";
-import Router, { useRouter } from "next/router";
-import { APP_ROUTES } from "@/common/constants/routes";
-import styles from "../styles.module.scss";
-import { CreateItemParameters } from "../../../common/libs/types";
-import { useCustomerIdStore } from "@/hooks/useCustomerId";
-import Cookies from "js-cookie";
-import { COOKIES_KEY } from "@/common/constants/cookie";
-import { inquiryServiceApi } from "@/services/inquiry-service";
-import { toast } from "react-toastify";
+import { inquiryStatus, PARAM_TOP_BAR_TITLE } from '@/common/constants/params';
+import { useTopBarStore } from '@/hooks/useTopBar';
+import React, { useEffect, useState } from 'react';
+import { Button, Col, DatePicker, Form, Input, Row, Spin } from 'antd';
+import { CREATE_INQUIRY_NAME_SPACES } from '@/common/constants/namespaces';
+import { useRouter } from 'next/navigation';
+import { APP_ROUTES } from '@/common/constants/routes';
+import styles from '../styles.module.scss';
+import { CreateItemParameters } from '../../../common/libs/types';
+import { useCustomerIdStore } from '@/hooks/useCustomerId';
+import Cookies from 'js-cookie';
+import { COOKIES_KEY } from '@/common/constants/cookie';
+import { inquiryServiceApi } from '@/services/inquiry-service';
+import { toast } from 'react-toastify';
 
 function CreateInquiryContainer() {
   const { setTitle } = useTopBarStore();
   const { globalCustomerId } = useCustomerIdStore();
-  const [titleValue, setTitleValue] = useState("");
+  const [titleValue, setTitleValue] = useState('');
   const [deadlineValue, setDeadlineValue] = useState<any>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [contentValue, setContentValue] = useState("");
+  const [contentValue, setContentValue] = useState('');
   const [form] = Form.useForm();
   const router = useRouter();
 
@@ -38,20 +38,21 @@ function CreateInquiryContainer() {
           customer_id: globalCustomerId,
           status: defaultStatus?.id,
           system_due_date: deadlineValue,
-          user_id: Cookies.get(COOKIES_KEY.USER_ID)
-        }
-      }
+          user_id: Cookies.get(COOKIES_KEY.USER_ID),
+        },
+      },
     };
     createInquiry(payload)
-      .then(_ => {
+      .then((_) => {
         setIsLoading(true);
-        router.push(APP_ROUTES.LIST_INQUIRY).then();
+        router.push(APP_ROUTES.LIST_INQUIRY);
       })
       .catch((err) => {
         toast.error(
-          err?.data?.errors[0]?.description || "Something went wrong", {
+          err?.data?.errors[0]?.description || 'Something went wrong',
+          {
             position: toast.POSITION.TOP_CENTER,
-            autoClose: 1000
+            autoClose: 1000,
           }
         );
       });
@@ -67,7 +68,7 @@ function CreateInquiryContainer() {
               onFinish={onFinish}
               className="form-label-align-left"
               labelCol={{
-                span: 24
+                span: 24,
               }}
               autoComplete="off"
             >
@@ -76,10 +77,7 @@ function CreateInquiryContainer() {
                   <Form.Item
                     label={CREATE_INQUIRY_NAME_SPACES.TITLE_LABEL.title}
                     name={CREATE_INQUIRY_NAME_SPACES.TITLE_LABEL.dataKey}
-                    rules={[
-                      { required: true },
-                      { max: 255 }
-                    ]}
+                    rules={[{ required: true }, { max: 255 }]}
                   >
                     <Input
                       value={titleValue}
@@ -91,9 +89,7 @@ function CreateInquiryContainer() {
                   <Form.Item
                     label={CREATE_INQUIRY_NAME_SPACES.DEADLINE_LABEL.title}
                     name={CREATE_INQUIRY_NAME_SPACES.DEADLINE_LABEL.dataKey}
-                    rules={[
-                      { required: true }
-                    ]}
+                    rules={[{ required: true }]}
                   >
                     <DatePicker
                       className="w-full"
@@ -107,9 +103,7 @@ function CreateInquiryContainer() {
                   <Form.Item
                     label={CREATE_INQUIRY_NAME_SPACES.CONTENT_LABEL.title}
                     name={CREATE_INQUIRY_NAME_SPACES.CONTENT_LABEL.dataKey}
-                    rules={[
-                      { required: true }
-                    ]}
+                    rules={[{ required: true }]}
                   >
                     <Input.TextArea
                       value={contentValue}
@@ -120,11 +114,17 @@ function CreateInquiryContainer() {
                 </Col>
               </Row>
               <Row>
-                <Col span={24} className="flex justify-center items-center gap-2">
+                <Col
+                  span={24}
+                  className="flex justify-center items-center gap-2"
+                >
                   <Form.Item>
-                    <Button className="btn cancel" onClick={() => {
-                      Router.push(APP_ROUTES.LIST_INQUIRY);
-                    }}>
+                    <Button
+                      className="btn cancel"
+                      onClick={() => {
+                        router.push(APP_ROUTES.LIST_INQUIRY);
+                      }}
+                    >
                       {CREATE_INQUIRY_NAME_SPACES.CANCEL_BTN}
                     </Button>
                   </Form.Item>
