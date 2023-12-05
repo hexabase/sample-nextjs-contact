@@ -1,6 +1,23 @@
 export const DEFAULT_PARAM_SEARCH = {
-  page: 1,
-  per_page: 10
+  PAGE: 1,
+  PER_PAGE: 10
+}
+
+export const FADED = {
+  from: {
+    opacity: 0,
+  },
+  to: {
+    opacity: 1,
+  },
+  config: {
+    duration: 500,
+  },
+};
+
+export const MENU_LABEL = {
+  TOP_PAGE: "トップ",
+  INQUIRY_PAGE: "お問い合わせ",
 };
 
 export const PARAM_TOP_BAR_TITLE = {
