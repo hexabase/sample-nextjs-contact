@@ -3,17 +3,17 @@ import { useTopBarStore } from "@/hooks/useTopBar";
 import { DEFAULT_PARAM_SEARCH, PARAM_TOP_BAR_TITLE } from "@/common/constants/params";
 import TableComponent from "@/components/CommonTable";
 import type { ColumnsType } from "antd/es/table";
-import { homePagePayloadDataType, HomePageDataType } from "@/common/param-types";
+import { HomePageDataType } from "@/common/param-types";
 import { TOP_PAGE_NAME_SPACES } from "@/common/constants/namespaces";
 import { Tooltip } from "antd";
 import { APP_ROUTES } from "@/common/constants/routes";
-import { useQuery } from "@tanstack/react-query";
 import { customersServiceApi } from "@/services/customer-service";
 import { formatTime } from "@/utils";
 import { SPLASH_REVERSED_DATE_FORMAT } from "@/common/constants/dateFormat";
 import { useCustomerIdStore } from "@/hooks/useCustomerId";
 import { useRouter } from "next/router";
 import TopPageFilterComponent from "@/components/CommonTable/Filter/TopPageFilter";
+import { GetItemsParameters } from "@hexabase/hexabase-js/src/lib/types/item/input";
 
 const HomeContainer: FC = () => {
   // set title topBar
@@ -28,16 +28,14 @@ const HomeContainer: FC = () => {
   const { setGlobalCustomerId } = useCustomerIdStore();
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isLoadingDropdown, setIsLoadingDropdown] = useState<boolean>(true);
-  const [dropdownOptions, setDropdownOptions] = useState<any[]>([]);
 
   const [pagination, setPagination] = useState({
     limit: DEFAULT_PARAM_SEARCH.per_page,
     page: DEFAULT_PARAM_SEARCH.page,
-    total: tableData?.totalItems
+    total: tableData?.totalCount | 0
   });
 
-  const [payloadGet, setPayloadGet] = useState<homePagePayloadDataType>({
+  const [payloadGet, setPayloadGet] = useState<GetItemsParameters>({
     page: pagination.page || 1,
     per_page: pagination.limit || 10,
     use_display_id: true,
@@ -52,33 +50,7 @@ const HomeContainer: FC = () => {
     });
   }, [payloadGet]);
 
-  const dropdownPayload = {
-    "page": DEFAULT_PARAM_SEARCH.page,
-    "per_page": 999999,
-    "use_display_id": true,
-    "return_number_value": true
-  };
-
   const { getListCustomer } = customersServiceApi;
-
-  const setDropdownData = (data: any) => {
-    const options: any[] = [];
-    const objects = data?.items;
-    objects.forEach((item: any) => {
-      options.push({
-        value: item?.id,
-        label: item?.company_name
-      });
-    });
-    setDropdownOptions(options);
-    setIsLoadingDropdown(false);
-  };
-
-  useQuery({
-    queryKey: ["customers", { dropdownPayload }],
-    queryFn: () => getListCustomer(dropdownPayload),
-    onSuccess: (data) => setDropdownData(data)
-  });
 
   const columns: ColumnsType<HomePageDataType> = [
     {
@@ -88,10 +60,10 @@ const HomeContainer: FC = () => {
       showSorterTooltip: false,
       sorter: true,
       ellipsis: true,
-      width: "12.5%",
-      render: (text, record) => (
+      width: "15%",
+      render: (_, record) => (
         <button className="w-full text-center" onClick={() => onClickRow(record)}>
-          {text}
+          {record?.fields?.id}
         </button>
       )
     },
@@ -102,11 +74,11 @@ const HomeContainer: FC = () => {
       showSorterTooltip: false,
       sorter: true,
       ellipsis: true,
-      width: "12.5%",
+      width: "60%",
       render: (text, record) => (
         <Tooltip title={text}>
-          <button onClick={() => onClickRow(record)}>
-            {text}
+          <button className="w-full text-left" onClick={() => onClickRow(record)}>
+            {record?.fields?.company_name}
           </button>
         </Tooltip>
       )
@@ -118,67 +90,17 @@ const HomeContainer: FC = () => {
       showSorterTooltip: false,
       sorter: true,
       ellipsis: true,
-      width: "12.5%",
+      width: "25%",
       render: (_, record) => (<span className="flex justify-center w-full">{
-        record?.updated_at
-          ? formatTime(record?.updated_at, SPLASH_REVERSED_DATE_FORMAT)
-          : formatTime(record?.created_at, SPLASH_REVERSED_DATE_FORMAT)
+        record?.updatedAt
+          ? formatTime(record?.updatedAt, SPLASH_REVERSED_DATE_FORMAT)
+          : formatTime(record?.createdAt, SPLASH_REVERSED_DATE_FORMAT)
       }</span>)
-    },
-    {
-      title: TOP_PAGE_NAME_SPACES.UNFINISHED_TASKS.title,
-      dataIndex: TOP_PAGE_NAME_SPACES.UNFINISHED_TASKS.dataIndex,
-      key: TOP_PAGE_NAME_SPACES.UNFINISHED_TASKS.dataIndex,
-      showSorterTooltip: false,
-      sorter: true,
-      ellipsis: true,
-      width: "12.5%",
-      render: (text) => (<span className="flex justify-center w-full">{text ? text : "-"}</span>)
-    },
-    {
-      title: TOP_PAGE_NAME_SPACES.NEW_TASKS.title,
-      dataIndex: TOP_PAGE_NAME_SPACES.NEW_TASKS.dataIndex,
-      key: TOP_PAGE_NAME_SPACES.NEW_TASKS.dataIndex,
-      showSorterTooltip: false,
-      sorter: true,
-      ellipsis: true,
-      width: "12.5%",
-      render: (text) => (<span className="flex justify-center w-full">{text ? text : "-"}</span>)
-    },
-    {
-      title: TOP_PAGE_NAME_SPACES.RECEIVED_TASKS.title,
-      dataIndex: TOP_PAGE_NAME_SPACES.RECEIVED_TASKS.dataIndex,
-      key: TOP_PAGE_NAME_SPACES.RECEIVED_TASKS.dataIndex,
-      showSorterTooltip: false,
-      sorter: true,
-      ellipsis: true,
-      width: "12.5%",
-      render: (text) => (<span className="flex justify-center w-full">{text ? text : "-"}</span>)
-    },
-    {
-      title: TOP_PAGE_NAME_SPACES.IN_PROGRESS_TASKS.title,
-      dataIndex: TOP_PAGE_NAME_SPACES.IN_PROGRESS_TASKS.dataIndex,
-      key: TOP_PAGE_NAME_SPACES.IN_PROGRESS_TASKS.dataIndex,
-      showSorterTooltip: false,
-      sorter: true,
-      ellipsis: true,
-      width: "12.5%",
-      render: (text) => (<span className="flex justify-center w-full">{text ? text : "-"}</span>)
-    },
-    {
-      title: TOP_PAGE_NAME_SPACES.CONFIRMED_TASKS.title,
-      dataIndex: TOP_PAGE_NAME_SPACES.CONFIRMED_TASKS.dataIndex,
-      key: TOP_PAGE_NAME_SPACES.CONFIRMED_TASKS.dataIndex,
-      showSorterTooltip: false,
-      sorter: true,
-      ellipsis: true,
-      width: "12.5%",
-      render: (text) => (<span className="flex justify-center w-full">{text ? text : "-"}</span>)
     }
   ];
 
   const onClickRow = (record: HomePageDataType) => {
-    setGlobalCustomerId(record?.i_id);
+    setGlobalCustomerId(record?.id);
     setIsLoading(true);
     router.push(APP_ROUTES.LIST_INQUIRY).then();
   };
@@ -188,8 +110,6 @@ const HomeContainer: FC = () => {
       <TopPageFilterComponent
         payloadGet={payloadGet}
         setPayloadGet={setPayloadGet}
-        isLoadingDropdown={isLoadingDropdown}
-        dropdownOptions={dropdownOptions}
       />
       <TableComponent
         tableData={tableData}

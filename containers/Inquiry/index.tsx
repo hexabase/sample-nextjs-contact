@@ -14,7 +14,7 @@ import {
 } from "@/common/constants/params";
 import { LIST_INQUIRIES_NAME_SPACES } from "@/common/constants/namespaces";
 import { APP_ROUTES } from "@/common/constants/routes";
-import { ListInquiriesDataType, listInquiriesPayloadDataType } from "@/common/param-types";
+import { ListInquiriesDataType, UpdateItemParameters } from "@/common/param-types";
 import { ColumnsType } from "antd/es/table";
 import { customersServiceApi } from "@/services/customer-service";
 import { useCustomerIdStore } from "@/hooks/useCustomerId";
@@ -22,6 +22,7 @@ import TableComponent from "@/components/CommonTable";
 import InquiryFilterComponent from "@/components/CommonTable/Filter/InquiryFilter";
 import { useTopBarStore } from "@/hooks/useTopBar";
 import { useRouter } from "next/router";
+import { GetItemsParameters } from "@hexabase/hexabase-js/src/lib/types/item/input";
 
 
 function InquiryContainer() {
@@ -40,25 +41,20 @@ function InquiryContainer() {
   const [pagination, setPagination] = useState({
     limit: DEFAULT_PARAM_SEARCH.per_page,
     page: DEFAULT_PARAM_SEARCH.page,
-    total: tableData?.totalItems | 0
+    total: tableData?.totalCount | 0
   });
   const [customerId, setCustomerId] = useState<string | any>(globalCustomerId);
   const [customerOptions, setCustomerOptions] = useState<any[]>([]);
-  const [customerOptionValue, setCustomerOptionValue] = useState<any>([]);
 
   const [
     payloadGet, setPayloadGet
-  ] = useState<listInquiriesPayloadDataType>({
+  ] = useState<GetItemsParameters>({
     page: pagination.page,
     per_page: pagination.limit,
     use_display_id: true,
     return_number_value: true,
     conditions: [
-      {
-        "conditions": [
-          { "id": "customer_id", "search_value": [`${customerId}`] }
-        ]
-      }
+      { "id": "customer_id", "search_value": [`${customerId}`] }
     ]
   });
 
@@ -78,7 +74,7 @@ function InquiryContainer() {
       const response: any = r;
       setDropdownData(response);
       if (customerId === "" || customerId === null || customerId === undefined) {
-        setCustomerId(response?.items?.[0]?.i_id);
+        setGlobalCustomerId(response?.items?.[0]?.id);
       }
       setIsLoadingDropdown(false);
     });
@@ -86,10 +82,10 @@ function InquiryContainer() {
 
   const setDropdownData = (data: any) => {
     const options: any[] = [];
-    data?.items.forEach((item: any) => {
+    data?.items?.forEach((item: any) => {
       options.push({
-        value: item?.i_id,
-        label: item?.company_name
+        value: item?.id,
+        label: item?.fields?.company_name
       });
     });
     setCustomerOptions(options);
@@ -104,29 +100,20 @@ function InquiryContainer() {
     });
   }, [payloadGet, isFetching]);
 
-  useEffect(() => {
-    const tempPagination = { ...pagination };
-    tempPagination.total = tableData?.totalItems;
-    setPagination(tempPagination);
-  }, [tableData]);
-
-  useEffect(() => {
-    const customerObject = customerOptions.find((item) => {
-      return item?.value === customerId;
-    });
-    setCustomerOptionValue(customerObject?.value);
-  }, [customerId, customerOptions]);
-
-  const handleUpdateStatus = (status: any, itemId: string | number) => {
+  const handleUpdateStatus = (status: any, record: any) => {
     const statusObject = inquiryStatus.find((obj: any) => {
       return obj.display === status;
     });
-    const payload = {
-      item: { status: statusObject?.id },
-      is_force_update: true
+    const payload: UpdateItemParameters = {
+      itemActionParameters: {
+        item: { status: statusObject?.id },
+        rev_no: record?.revNo
+      },
+      itemId: record?.id
     };
-    updateInquiry(payload, itemId).then(_ => setIsFetching(true));
+    updateInquiry(payload).then(_ => setIsFetching(true));
   };
+
   const columns: ColumnsType<ListInquiriesDataType> = [
     {
       title: LIST_INQUIRIES_NAME_SPACES.TABLE_TITLE.title,
@@ -137,12 +124,12 @@ function InquiryContainer() {
       width: "20%",
       ellipsis: true,
       sorter: true,
-      render: (text: string, record: any) => (
-        <Tooltip title={text}>
+      render: (_, record: any) => (
+        <Tooltip title={record?.fields?.Title}>
           <button onClick={() => {
             setIsLoading(true);
-            router.push(APP_ROUTES.DetailInquiry(record.i_id)).then();
-          }}>{text}</button>
+            router.push(APP_ROUTES.DetailInquiry(record.id)).then();
+          }}>{record?.fields?.Title}</button>
         </Tooltip>
       )
     },
@@ -155,9 +142,9 @@ function InquiryContainer() {
       width: "20%",
       ellipsis: true,
       sorter: true,
-      render: (text: string, _: any) => (
-        <Tooltip title={text}>
-          <span>{text}</span>
+      render: (_, record: any) => (
+        <Tooltip title={record?.fields?.pic}>
+          <span>{record?.fields?.pic}</span>
         </Tooltip>
       )
     },
@@ -169,8 +156,8 @@ function InquiryContainer() {
       showSorterTooltip: false,
       width: "10%",
       sorter: true,
-      render: (_: string, record: any) => {
-        const transformedStatus = inquiryStatusParams(record.status);
+      render: (_, record: any) => {
+        const transformedStatus = inquiryStatusParams(record?.fields?.status?.en);
         const stylesCss = {
           borderColor: transformedStatus?.borderColor,
           color: transformedStatus?.color
@@ -194,7 +181,7 @@ function InquiryContainer() {
                   {currentInquiryStatus?.previousStatus && (
                     <div
                       className="cursor-pointer flex gap-2 text-[#808080] items-center hover:text-blue-300"
-                      onClick={() => handleUpdateStatus(currentInquiryStatus?.previousStatus, record.i_id)}
+                      onClick={() => handleUpdateStatus(currentInquiryStatus?.previousStatus, record)}
                     >
                       <IconArrowLeft width={28} height={28} />
                       <span className="text-lg text-black hover:text-blue-300">
@@ -205,7 +192,7 @@ function InquiryContainer() {
                   {currentInquiryStatus?.nextStatus && (
                     <div
                       className="cursor-pointer flex gap-2 text-[#808080] items-center hover:text-blue-300"
-                      onClick={() => handleUpdateStatus(currentInquiryStatus?.nextStatus, record.i_id)}
+                      onClick={() => handleUpdateStatus(currentInquiryStatus?.nextStatus, record)}
                     >
                       <IconArrowRight width={28} height={28} />
                       <span className="text-lg text-black hover:text-blue-300">
@@ -236,11 +223,11 @@ function InquiryContainer() {
       showSorterTooltip: false,
       width: "12.5%",
       sorter: true,
-      render: (_: string, record: any) => {
+      render: (_, record: any) => {
         return <div>{
-          record?.updated_at
-            ? formatTime(record?.updated_at, SPLASH_REVERSED_DATE_FORMAT)
-            : formatTime(record?.created_at, SPLASH_REVERSED_DATE_FORMAT)
+          record?.updatedAt
+            ? formatTime(record?.updatedAt, SPLASH_REVERSED_DATE_FORMAT)
+            : formatTime(record?.createdAt, SPLASH_REVERSED_DATE_FORMAT)
         }</div>;
       }
     },
@@ -251,7 +238,10 @@ function InquiryContainer() {
       align: "center",
       showSorterTooltip: false,
       width: "12.5%",
-      sorter: true
+      sorter: true,
+      render: (_, record: any) => (
+        <span>{record?.fields?.important?.ja}</span>
+      )
     },
     {
       title: LIST_INQUIRIES_NAME_SPACES.TABLE_URGENCY.title,
@@ -260,7 +250,10 @@ function InquiryContainer() {
       align: "center",
       showSorterTooltip: false,
       width: "12.5%",
-      sorter: true
+      sorter: true,
+      render: (_, record: any) => (
+        <span>{record?.fields?.urgency?.ja}</span>
+      )
     },
     {
       title: LIST_INQUIRIES_NAME_SPACES.TABLE_PRIORITY.title,
@@ -269,7 +262,10 @@ function InquiryContainer() {
       align: "center",
       showSorterTooltip: false,
       width: "12.5%",
-      sorter: true
+      sorter: true,
+      render: (_, record: any) => (
+        <span>{record?.fields?.priority?.ja}</span>
+      )
     }
   ];
   return (
@@ -277,9 +273,9 @@ function InquiryContainer() {
       <InquiryFilterComponent
         payloadGet={payloadGet}
         setPayloadGet={setPayloadGet}
+        customerId={customerId}
         setCustomerId={setCustomerId}
         isLoadingDropdown={isLoadingDropdown}
-        customerOptionValue={customerOptionValue}
         customerOptions={customerOptions}
       />
       <TableComponent

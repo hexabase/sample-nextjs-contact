@@ -13,7 +13,7 @@ interface Props {
   payloadGet: any,
   setPayloadGet: any,
   setCustomerId: any,
-  customerOptionValue: any,
+  customerId: any,
   customerOptions: any,
   isLoadingDropdown: boolean,
 }
@@ -23,50 +23,45 @@ const InquiryFilterComponent = (props: Props) => {
     payloadGet,
     setPayloadGet,
     setCustomerId,
-    customerOptionValue,
+    customerId,
     customerOptions,
-    isLoadingDropdown,
+    isLoadingDropdown
   } = props;
   const [form] = Form.useForm();
 
   useEffect(() => {
-    form.setFieldsValue({
-      customerId: customerOptionValue
-    })
-  }, [customerOptionValue]);
-  const handleFinish = (values: any) => {
+    if (customerId) {
+      form.setFieldsValue({
+        customerId: customerId
+      });
+    }
+  }, [customerId]);
+  const handleFinish = (
+    values: { customerId: any; statusDropdown: any[]; keywordSearch: any; }
+  ) => {
     const conditions = [];
+    conditions.push(
+      { "id": "customer_id", "search_value": [`${values?.customerId ?? ""}`] }
+    );
     if (values?.customerId) {
       setCustomerId(values?.customerId);
-      conditions.push(
-        {
-          "conditions": [
-            { "id": "customer_id", "search_value": [`${values?.customerId}`] }
-          ]
-        }
-      );
     }
     if (values?.statusDropdown) {
-      const statusConditions: { id: string; search_value: string[]; }[] = [];
+      const statusConditions: any[] = [];
       values?.statusDropdown.forEach((item: any) => {
-        statusConditions.push({
-          "id": "status", "search_value": [`${item}`]
-        });
+        statusConditions.push(item);
       });
       conditions.push(
         {
-          "conditions": statusConditions,
-          "use_or_condition": true
+          "id": "status",
+          "data_type": "select",
+          "search_value": statusConditions
         }
       );
     }
     if (values?.keywordSearch) {
       conditions.push(
-        {
-          "conditions": [
-            { "id": "Title", "search_value": [`${values?.keywordSearch}`] }
-          ]
-        }
+        { "id": "Title", "search_value": [`${values?.keywordSearch}`] }
       );
     }
 

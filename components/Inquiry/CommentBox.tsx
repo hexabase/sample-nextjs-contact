@@ -1,14 +1,13 @@
 import IconSend from "@/components/icons/IconSend";
 import { Input, Spin } from "antd";
 import React, { useEffect, useState } from "react";
-import { listInquiriesPayloadDataType } from "@/common/param-types";
 import { DEFAULT_PARAM_SEARCH } from "@/common/constants/params";
 import { commentServiceApi } from "@/services/comment-service";
 import { formatTime } from "@/utils";
 import { NON_SECOND_DATETIME_FORMAT } from "@/common/constants/dateFormat";
-import Cookies from "js-cookie";
-import { COOKIES_KEY } from "@/common/constants/cookie";
 import { DETAIL_INQUIRY_NAME_SPACES } from "@/common/constants/namespaces";
+import { GetItemsParameters } from "@hexabase/hexabase-js/src/lib/types/item/input";
+import { CreateItemParameters } from "@/common/param-types";
 
 interface Props {
   inquiryId?: any;
@@ -24,17 +23,13 @@ function CommentComponent(props: Props) {
   const [tableData, setTableData] = useState<any>();
   const [
     payloadGet, setPayloadGet
-  ] = useState<listInquiriesPayloadDataType>({
+  ] = useState<GetItemsParameters>({
     page: DEFAULT_PARAM_SEARCH.page,
     per_page: 9999,
     use_display_id: true,
     return_number_value: true,
     conditions: [
-      {
-        "conditions": [
-          { "id": "inquiry_id", "search_value": [`${inquiryId}`] }
-        ]
-      }
+      { "id": "inquiry_id", "search_value": [`${inquiryId}`] }
     ]
   });
 
@@ -52,15 +47,18 @@ function CommentComponent(props: Props) {
   }, [payloadGet, isFetching]);
   const handleSendComment = () => {
     if (valueInput) {
-      const payload = {
-        item: {
-          inquiry_id: inquiryId,
-          user_id: Cookies.get(COOKIES_KEY.USER_ID),
-          content: valueInput
-        },
-        ensure_transaction: true
+      const payload: CreateItemParameters = {
+        payload: {
+          item: {
+            inquiry_id: inquiryId,
+            content: valueInput
+          }
+        }
       };
-      createComment(payload).then(r => setIsFetching(true));
+      createComment(payload).then(_ => {
+        setValueInput("");
+        setIsFetching(true);
+      });
     }
   };
   return (
@@ -75,9 +73,9 @@ function CommentComponent(props: Props) {
               <div className="my-3">
                 <div className="flex items-center gap-5 mb-2">
                   <span className="text-lg font-bold">{pic}</span>
-                  <span className="text-sm">{formatTime(item?.created_at, NON_SECOND_DATETIME_FORMAT)}</span>
+                  <span className="text-sm">{formatTime(item?.createdAt, NON_SECOND_DATETIME_FORMAT)}</span>
                 </div>
-                <p>{item.content}</p>
+                <p>{item.title}</p>
               </div>
             ))}
           </div>

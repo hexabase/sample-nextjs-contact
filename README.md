@@ -1,11 +1,11 @@
-# Hexabase Mass - Inquiry
+# Hexabase sample-nextjs-contact.
 
 ## Summary
-This is Mass - Inquiry application
+This is sample-nextjs-contact application
 
-[http://inquiry.dev.landbridge.vn/](http://inquiry.dev.landbridge.vn)
+[https://sample-nextjs-contact.vercel.app/](https://sample-nextjs-contact.vercel.app/)
 
-![http://inquiry.dev.landbridge.vn/](./public/images/site-image.png)
+![https://sample-nextjs-contact.vercel.app/](./public/images/site-image.png)
 
 ## Prerequisites
 Download and install or execute cmd to install
