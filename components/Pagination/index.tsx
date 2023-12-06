@@ -3,8 +3,7 @@ import { Pagination as PaginationAntd } from 'antd';
 import classNames from 'classnames';
 import { useState } from 'react';
 
-import { DEFAULT_SIZE, PAGE_SIZE_OPTIONS } from '@/utils/constant';
-
+import { DEFAULT_SIZE, PAGE_SIZE_OPTIONS } from '@/common/constants/params';
 import styles from './styles.module.scss';
 
 interface CustomPaginationProps extends PaginationProps {
