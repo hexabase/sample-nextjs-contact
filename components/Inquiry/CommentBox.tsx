@@ -1,13 +1,14 @@
-import IconSend from "@/components/icons/IconSend";
-import { Input, Spin } from "antd";
-import React, { useEffect, useState } from "react";
-import { DEFAULT_PARAM_SEARCH } from "@/common/constants/params";
-import { commentServiceApi } from "@/services/comment-service";
-import { formatTime } from "@/utils";
-import { NON_SECOND_DATETIME_FORMAT } from "@/common/constants/dateFormat";
-import { DETAIL_INQUIRY_NAME_SPACES } from "@/common/constants/namespaces";
-import { GetItemsParameters } from "@hexabase/hexabase-js/src/lib/types/item/input";
-import { CreateItemParameters } from "@/common/param-types";
+import IconSend from '@/components/icons/IconSend';
+import { Input, Spin } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { DEFAULT_PARAM_SEARCH } from '@/common/constants/params';
+import { commentServiceApi } from '@/services/comment-service';
+import { NON_SECOND_DATETIME_FORMAT } from '@/common/constants/dateFormat';
+import { DETAIL_INQUIRY_NAME_SPACES } from '@/common/constants/namespaces';
+import { GetItemsParameters } from '@hexabase/hexabase-js/src/lib/types/item/input';
+import { CreateItemParameters } from '@/common/libs/types';
+import { formatTime } from '@/common/libs/functions';
+import item from '@hexabase/hexabase-js/dist/lib/packages/item';
 
 interface Props {
   inquiryId?: any;
@@ -17,30 +18,26 @@ interface Props {
 function CommentComponent(props: Props) {
   const { inquiryId, pic } = props;
   const { getListComments, createComment } = commentServiceApi;
-  const [valueInput, setValueInput] = useState<string | undefined>("");
+  const [valueInput, setValueInput] = useState<string | undefined>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [tableData, setTableData] = useState<any>();
-  const [
-    payloadGet, setPayloadGet
-  ] = useState<GetItemsParameters>({
-    page: DEFAULT_PARAM_SEARCH.page,
+  const [payloadGet, setPayloadGet] = useState<GetItemsParameters>({
+    page: DEFAULT_PARAM_SEARCH.PAGE,
     per_page: 9999,
     use_display_id: true,
     return_number_value: true,
-    conditions: [
-      { "id": "inquiry_id", "search_value": [`${inquiryId}`] }
-    ]
+    conditions: [{ id: 'inquiry_id', search_value: [`${inquiryId}`] }],
   });
 
   useEffect(() => {
-    getListComments(payloadGet).then(r => setTableData(r));
+    getListComments(payloadGet).then((r) => setTableData(r));
   }, [payloadGet, isFetching]);
 
   useEffect(() => {
     setIsLoading(true);
     setIsFetching(false);
-    getListComments(payloadGet).then(r => {
+    getListComments(payloadGet).then((r) => {
       setTableData(r);
       setIsLoading(false);
     });
@@ -51,12 +48,12 @@ function CommentComponent(props: Props) {
         payload: {
           item: {
             inquiry_id: inquiryId,
-            content: valueInput
-          }
-        }
+            content: valueInput,
+          },
+        },
       };
-      createComment(payload).then(_ => {
-        setValueInput("");
+      createComment(payload).then((_) => {
+        setValueInput('');
         setIsFetching(true);
       });
     }
@@ -69,11 +66,13 @@ function CommentComponent(props: Props) {
       <Spin spinning={isLoading}>
         {tableData?.items && (
           <div>
-            {tableData?.items.map((item: any) => (
-              <div className="my-3">
+            {tableData?.items.map((item: any, i: number) => (
+              <div className="my-3" key={i}>
                 <div className="flex items-center gap-5 mb-2">
                   <span className="text-lg font-bold">{pic}</span>
-                  <span className="text-sm">{formatTime(item?.createdAt, NON_SECOND_DATETIME_FORMAT)}</span>
+                  <span className="text-sm">
+                    {formatTime(item?.createdAt, NON_SECOND_DATETIME_FORMAT)}
+                  </span>
                 </div>
                 <p>{item.title}</p>
               </div>
