@@ -66,12 +66,7 @@ const TopPageContainer: FC = () => {
       ellipsis: true,
       width: '15%',
       render: (_, record) => (
-        <button
-          className="w-full text-center"
-          onClick={() => onClickRow(record)}
-        >
-          {record?.fields?.id}
-        </button>
+        <span className="text-center block w-full">{record?.fields?.id}</span>
       ),
     },
     {
@@ -84,12 +79,7 @@ const TopPageContainer: FC = () => {
       width: '60%',
       render: (text, record) => (
         <Tooltip title={text}>
-          <button
-            className="w-full text-left"
-            onClick={() => onClickRow(record)}
-          >
-            {record?.fields?.company_name}
-          </button>
+          <span className="text-left">{record?.fields?.company_name}</span>
         </Tooltip>
       ),
     },
@@ -132,6 +122,11 @@ const TopPageContainer: FC = () => {
         pagination={pagination}
         setPagination={setPagination}
         tableName="top_page_table"
+        onRow={(record: any, rowIndex: any) => {
+          return {
+            onClick: (_: any) => onClickRow(record)
+          };
+        }}
       />
     </>
   );
