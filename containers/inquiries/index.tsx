@@ -186,42 +186,57 @@ function InquiryContainer() {
               className: styles.btnCf,
             }}
             title={
-              statusDisplay && (
-                <div className="flex flex-col gap-2 pt-2">
-                  {currentInquiryStatus?.previousStatus && (
-                    <div
-                      className="cursor-pointer flex gap-2 text-[#808080] items-center hover:text-blue-300"
-                      onClick={() =>
-                        handleUpdateStatus(
-                          currentInquiryStatus?.previousStatus,
-                          record
-                        )
-                      }
-                    >
-                      <IconArrowLeft width={28} height={28} />
-                      <span className="text-lg text-black hover:text-blue-300">
+              <div className="flex flex-col gap-2 pt-2">
+                {currentInquiryStatus?.previousStatus && (
+                  <div
+                    className="cursor-pointer flex gap-2 text-[#808080] items-center hover:text-blue-300"
+                    onClick={() =>
+                      handleUpdateStatus(
+                        currentInquiryStatus?.previousStatus,
+                        record
+                      )
+                    }
+                  >
+                    <IconArrowLeft width={28} height={28} />
+                    <span className="text-lg text-black hover:text-blue-300">
                         {`${currentInquiryStatus?.previousStatus}${LIST_INQUIRIES_NAME_SPACES.BACK_STATUS}`}
                       </span>
-                    </div>
-                  )}
-                  {currentInquiryStatus?.nextStatus && (
-                    <div
-                      className="cursor-pointer flex gap-2 text-[#808080] items-center hover:text-blue-300"
-                      onClick={() =>
-                        handleUpdateStatus(
-                          currentInquiryStatus?.nextStatus,
-                          record
-                        )
-                      }
-                    >
-                      <IconArrowRight width={28} height={28} />
-                      <span className="text-lg text-black hover:text-blue-300">
+                  </div>
+                )}
+                {currentInquiryStatus?.nextStatus && (
+                  <div
+                    className="cursor-pointer flex gap-2 text-[#808080] items-center hover:text-blue-300"
+                    onClick={() =>
+                      handleUpdateStatus(
+                        currentInquiryStatus?.nextStatus,
+                        record
+                      )
+                    }
+                  >
+                    <IconArrowRight width={28} height={28} />
+                    <span className="text-lg text-black hover:text-blue-300">
                         {`${currentInquiryStatus?.nextStatus}${LIST_INQUIRIES_NAME_SPACES.NEXT_STATUS}`}
                       </span>
-                    </div>
-                  )}
-                </div>
-              )
+                  </div>
+                )}
+                {currentInquiryStatus === undefined && (
+                  <div
+                    className="cursor-pointer flex gap-2 text-[#808080] items-center hover:text-blue-300"
+                    onClick={() =>
+                      handleUpdateStatus(
+                        inquiryStatus?.[0].display,
+                        record
+                      )
+                    }
+                  >
+                    <IconArrowRight width={28} height={28} />
+                    <span className="text-lg text-black hover:text-blue-300">
+                        {`${inquiryStatus?.[0].display}${LIST_INQUIRIES_NAME_SPACES.NEXT_STATUS}`}
+                      </span>
+                  </div>
+                )
+                }
+              </div>
             }
           >
             <div
