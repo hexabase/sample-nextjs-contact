@@ -1,31 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import { Popconfirm, Tooltip } from 'antd';
-import styles from './styles.module.scss';
-import IconArrowLeft from '@/components/icons/IconArrowLeft';
-import IconArrowRight from '@/components/icons/IconArrowRight';
-import { inquiryServiceApi } from '@/services/inquiry-service';
-import { formatTime } from '@/common/libs/functions';
-import { SPLASH_REVERSED_DATE_FORMAT } from '@/common/constants/dateFormat';
+import React, { useEffect, useState } from "react";
+import { Popconfirm, Tooltip } from "antd";
+import styles from "./styles.module.scss";
+import IconArrowLeft from "@/components/icons/IconArrowLeft";
+import IconArrowRight from "@/components/icons/IconArrowRight";
+import { inquiryServiceApi } from "@/services/inquiry-service";
+import { formatTime } from "@/common/libs/functions";
+import { SPLASH_REVERSED_DATE_FORMAT } from "@/common/constants/dateFormat";
 import {
   DEFAULT_PARAM_SEARCH,
   inquiryStatus,
   inquiryStatusParams,
-  PARAM_TOP_BAR_TITLE,
-} from '@/common/constants/params';
-import { LIST_INQUIRIES_NAME_SPACES } from '@/common/constants/namespaces';
-import { APP_ROUTES } from '@/common/constants/routes';
-import {
-  ListInquiriesDataType,
-  UpdateItemParameters,
-} from '@/common/libs/types';
-import { ColumnsType } from 'antd/es/table';
-import { customersServiceApi } from '@/services/customer-service';
-import { useCustomerIdStore } from '@/hooks/useCustomerId';
-import TableComponent from '@/components/common_tables';
-import InquiryFilterComponent from '@/components/common_tables/filters/InquiryFilter';
-import { useTopBarStore } from '@/hooks/useTopBar';
-import { useRouter } from 'next/navigation';
-import { GetItemsParameters } from '@hexabase/hexabase-js/src/lib/types/item/input';
+  PARAM_TOP_BAR_TITLE
+} from "@/common/constants/params";
+import { LIST_INQUIRIES_NAME_SPACES } from "@/common/constants/namespaces";
+import { APP_ROUTES } from "@/common/constants/routes";
+import { ListInquiriesDataType, UpdateItemParameters } from "@/common/libs/types";
+import { ColumnsType } from "antd/es/table";
+import { customersServiceApi } from "@/services/customer-service";
+import { useCustomerIdStore } from "@/hooks/useCustomerId";
+import TableComponent from "@/components/common_tables";
+import InquiryFilterComponent from "@/components/common_tables/filters/InquiryFilter";
+import { useTopBarStore } from "@/hooks/useTopBar";
+import { useRouter } from "next/navigation";
+import { GetItemsParameters } from "@hexabase/hexabase-js/src/lib/types/item/input";
 
 function InquiryContainer() {
   const { setTitle } = useTopBarStore();
@@ -43,7 +40,7 @@ function InquiryContainer() {
   const [pagination, setPagination] = useState({
     limit: DEFAULT_PARAM_SEARCH.PER_PAGE,
     page: DEFAULT_PARAM_SEARCH.PAGE,
-    total: tableData?.totalCount | 0,
+    total: tableData?.totalCount | 0
   });
   const [customerId, setCustomerId] = useState<string | any>(globalCustomerId);
   const [customerOptions, setCustomerOptions] = useState<any[]>([]);
@@ -53,7 +50,7 @@ function InquiryContainer() {
     per_page: pagination.limit,
     use_display_id: true,
     return_number_value: true,
-    conditions: [{ id: 'customer_id', search_value: [`${customerId}`] }],
+    conditions: [{ id: "customer_id", search_value: [`${customerId}`] }]
   });
 
   useEffect(() => {
@@ -64,7 +61,7 @@ function InquiryContainer() {
     page: DEFAULT_PARAM_SEARCH.PAGE,
     per_page: 9999,
     use_display_id: true,
-    return_number_value: true,
+    return_number_value: true
   };
 
   useEffect(() => {
@@ -72,7 +69,7 @@ function InquiryContainer() {
       const response: any = r;
       setDropdownData(response);
       if (
-        customerId === '' ||
+        customerId === "" ||
         customerId === null ||
         customerId === undefined
       ) {
@@ -87,7 +84,7 @@ function InquiryContainer() {
     data?.items?.forEach((item: any) => {
       options.push({
         value: item?.id,
-        label: item?.fields?.company_name,
+        label: item?.fields?.company_name
       });
     });
     setCustomerOptions(options);
@@ -109,9 +106,9 @@ function InquiryContainer() {
     const payload: UpdateItemParameters = {
       itemActionParameters: {
         item: { status: statusObject?.id },
-        rev_no: record?.revNo,
+        rev_no: record?.revNo
       },
-      itemId: record?.id,
+      itemId: record?.id
     };
     updateInquiry(payload).then((_) => setIsFetching(true));
   };
@@ -121,46 +118,41 @@ function InquiryContainer() {
       title: LIST_INQUIRIES_NAME_SPACES.TABLE_TITLE.title,
       dataIndex: LIST_INQUIRIES_NAME_SPACES.TABLE_TITLE.dataIndex,
       key: LIST_INQUIRIES_NAME_SPACES.TABLE_TITLE.dataIndex,
-      align: 'center',
+      align: "center",
       showSorterTooltip: false,
-      width: '20%',
+      width: "20%",
       ellipsis: true,
       sorter: true,
       render: (_, record: any) => (
         <Tooltip title={record?.fields?.Title}>
-          <button
-            onClick={() => {
-              setIsLoading(true);
-              router.push(APP_ROUTES.DetailInquiry(record.id));
-            }}
-          >
+          <span className="text-left block w-full">
             {record?.fields?.Title}
-          </button>
+          </span>
         </Tooltip>
-      ),
+      )
     },
     {
       title: LIST_INQUIRIES_NAME_SPACES.TABLE_PIC.title,
       dataIndex: LIST_INQUIRIES_NAME_SPACES.TABLE_PIC.dataIndex,
       key: LIST_INQUIRIES_NAME_SPACES.TABLE_PIC.dataIndex,
-      align: 'center',
+      align: "center",
       showSorterTooltip: false,
-      width: '20%',
+      width: "20%",
       ellipsis: true,
       sorter: true,
       render: (_, record: any) => (
         <Tooltip title={record?.fields?.pic}>
           <span>{record?.fields?.pic}</span>
         </Tooltip>
-      ),
+      )
     },
     {
       title: LIST_INQUIRIES_NAME_SPACES.TABLE_STATUS.title,
       dataIndex: LIST_INQUIRIES_NAME_SPACES.TABLE_STATUS.dataIndex,
       key: LIST_INQUIRIES_NAME_SPACES.TABLE_STATUS.dataIndex,
-      align: 'center',
+      align: "center",
       showSorterTooltip: false,
-      width: '10%',
+      width: "10%",
       sorter: true,
       render: (_, record: any) => {
         const transformedStatus = inquiryStatusParams(
@@ -168,11 +160,11 @@ function InquiryContainer() {
         );
         const stylesCss = {
           borderColor: transformedStatus?.borderColor,
-          color: transformedStatus?.color,
+          color: transformedStatus?.color
         };
         const statusDisplay = transformedStatus?.display
           ? transformedStatus?.display
-          : '-';
+          : "-";
         const currentInquiryStatus = inquiryStatus.find((obj: any) => {
           return obj.display === statusDisplay;
         });
@@ -183,7 +175,7 @@ function InquiryContainer() {
             showCancel={false}
             placement="rightTop"
             okButtonProps={{
-              className: styles.btnCf,
+              className: styles.btnCf
             }}
             title={
               <div className="flex flex-col gap-2 pt-2">
@@ -248,15 +240,15 @@ function InquiryContainer() {
             </div>
           </Popconfirm>
         );
-      },
+      }
     },
     {
       title: LIST_INQUIRIES_NAME_SPACES.TABLE_DATE.title,
       dataIndex: LIST_INQUIRIES_NAME_SPACES.TABLE_DATE.dataIndex,
       key: LIST_INQUIRIES_NAME_SPACES.TABLE_DATE.dataIndex,
-      align: 'center',
+      align: "center",
       showSorterTooltip: false,
-      width: '12.5%',
+      width: "12.5%",
       sorter: true,
       render: (_, record: any) => {
         return (
@@ -266,38 +258,38 @@ function InquiryContainer() {
               : formatTime(record?.createdAt, SPLASH_REVERSED_DATE_FORMAT)}
           </div>
         );
-      },
+      }
     },
     {
       title: LIST_INQUIRIES_NAME_SPACES.TABLE_IMPORTANCE.title,
       dataIndex: LIST_INQUIRIES_NAME_SPACES.TABLE_IMPORTANCE.dataIndex,
       key: LIST_INQUIRIES_NAME_SPACES.TABLE_IMPORTANCE.dataIndex,
-      align: 'center',
+      align: "center",
       showSorterTooltip: false,
-      width: '12.5%',
+      width: "12.5%",
       sorter: true,
-      render: (_, record: any) => <span>{record?.fields?.important?.ja}</span>,
+      render: (_, record: any) => <span>{record?.fields?.important?.ja}</span>
     },
     {
       title: LIST_INQUIRIES_NAME_SPACES.TABLE_URGENCY.title,
       dataIndex: LIST_INQUIRIES_NAME_SPACES.TABLE_URGENCY.dataIndex,
       key: LIST_INQUIRIES_NAME_SPACES.TABLE_URGENCY.dataIndex,
-      align: 'center',
+      align: "center",
       showSorterTooltip: false,
-      width: '12.5%',
+      width: "12.5%",
       sorter: true,
-      render: (_, record: any) => <span>{record?.fields?.urgency?.ja}</span>,
+      render: (_, record: any) => <span>{record?.fields?.urgency?.ja}</span>
     },
     {
       title: LIST_INQUIRIES_NAME_SPACES.TABLE_PRIORITY.title,
       dataIndex: LIST_INQUIRIES_NAME_SPACES.TABLE_PRIORITY.dataIndex,
       key: LIST_INQUIRIES_NAME_SPACES.TABLE_PRIORITY.dataIndex,
-      align: 'center',
+      align: "center",
       showSorterTooltip: false,
-      width: '12.5%',
+      width: "12.5%",
       sorter: true,
-      render: (_, record: any) => <span>{record?.fields?.priority?.ja}</span>,
-    },
+      render: (_, record: any) => <span>{record?.fields?.priority?.ja}</span>
+    }
   ];
   return (
     <>
@@ -318,6 +310,14 @@ function InquiryContainer() {
         pagination={pagination}
         setPagination={setPagination}
         tableName="inquiry_page_table"
+        onRow={(record: any, rowIndex: any) => {
+          return {
+            onClick: (_: any) => {
+              setIsLoading(true);
+              router.push(APP_ROUTES.DetailInquiry(record.id));
+            }
+          };
+        }}
       />
     </>
   );

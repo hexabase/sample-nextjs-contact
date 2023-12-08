@@ -11,6 +11,7 @@ interface Props {
   columns: any,
   isLoading: boolean,
   tableName: string,
+  onRow?: any,
 }
 
 const TableComponent = (props: Props) => {
@@ -22,7 +23,8 @@ const TableComponent = (props: Props) => {
     setPagination,
     columns,
     isLoading,
-    tableName
+    tableName,
+    onRow
   } = props;
   useEffect(() => {
     const tempPagination = { ...pagination };
@@ -74,6 +76,7 @@ const TableComponent = (props: Props) => {
         setLimit={setLimit}
         tableName={tableName}
         onChange={handleTableChange}
+        onRow={onRow}
         rowKey="key"
       />
     </Spin>
