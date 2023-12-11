@@ -6,8 +6,3 @@ export const APP_ROUTES = {
   DetailInquiry: (id: string) => `/inquiry/${id}`,
   CREATE_INQUIRY: "/inquiry/create"
 };
-
-export const API_ROUTES = {
-  LOGIN: "/login",
-  USER_INFO: "/userinfo",
-};

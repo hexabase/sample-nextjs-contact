@@ -1,30 +1,31 @@
-import { Button, Modal } from "antd";
-import React from "react";
-import iconWarning from "@/public/images/iconWarning.png";
+import { Button, Modal } from 'antd';
+import React from 'react';
+import iconWarning from '@/public/images/iconWarning.png';
 
-import styles from "./styles.module.scss";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import { APP_ROUTES } from "@/common/constants/routes";
-import { inquiryServiceApi } from "@/services/inquiry-service";
-import { toast } from "react-toastify";
+import styles from './styles.module.scss';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { APP_ROUTES } from '@/common/constants/routes';
+import { inquiryServiceApi } from '@/services/inquiry-service';
+import { toast } from 'react-toastify';
 
 interface Props {
   showModalDel?: boolean;
   setShowModalDel?: React.Dispatch<React.SetStateAction<boolean>>;
+  id?: string;
 }
 
 function ModalDelete(props: Props) {
-  const { showModalDel, setShowModalDel } = props;
+  const { showModalDel, setShowModalDel, id } = props;
   const { deleteInquiry } = inquiryServiceApi;
 
   const router = useRouter();
   const handleSubmit = () => {
-    deleteInquiry({}, router.query.id)
-      .then(_ => router.push(APP_ROUTES.LIST_INQUIRY))
-      .catch(err => {
+    deleteInquiry(id)
+      .then((_) => router.push(APP_ROUTES.LIST_INQUIRY))
+      .catch((err) => {
         setShowModalDel?.(false);
-        toast.error(err?.data?.message || "Something went wrong");
+        toast.error(err?.data?.message || 'Something went wrong');
       });
   };
 

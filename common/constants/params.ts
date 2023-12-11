@@ -1,6 +1,26 @@
 export const DEFAULT_PARAM_SEARCH = {
-  page: 1,
-  per_page: 10
+  PAGE: 1,
+  PER_PAGE: 10
+}
+
+export const DEFAULT_SIZE = 10;
+export const PAGE_SIZE_OPTIONS = ['5', '10', '20', '30'];
+
+export const FADED = {
+  from: {
+    opacity: 0,
+  },
+  to: {
+    opacity: 1,
+  },
+  config: {
+    duration: 500,
+  },
+};
+
+export const MENU_LABEL = {
+  TOP_PAGE: "トップ",
+  INQUIRY_PAGE: "お問い合わせ",
 };
 
 export const PARAM_TOP_BAR_TITLE = {
@@ -25,21 +45,21 @@ export const inquiryStatus = [
   },
   {
     display: "完了",
-    nextStatus: "受付",
+    nextStatus: "確認",
     previousStatus: "作業中",
     id: "b05c9d79-2769-49a1-8b50-35cf278eccf1"
   },
   {
-    display: "受付",
-    nextStatus: "確認",
+    display: "確認",
+    nextStatus: "受付",
     previousStatus: "完了",
     id: "d8607c9b-2845-4372-b7cd-50633435c660"
   },
   {
-    display: "確認",
+    display: "受付",
     nextStatus: "",
-    previousStatus: "受付",
-    id: "d8607c9b-2845-4372-b7cd-50633435c66"
+    previousStatus: "確認",
+    id: "d8191865-cbae-424c-a007-fec4bc906dbb"
   }
 ];
 

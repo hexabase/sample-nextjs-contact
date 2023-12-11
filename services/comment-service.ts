@@ -1,16 +1,20 @@
-import { api } from "./api";
-
-export const HEXABASE_APPLICATION_ID = process.env.NEXT_PUBLIC_PROJECT_ID;
-export const HEXABASE_COMMENT_DATASTORE_ID = process.env.NEXT_PUBLIC_COMMENT_DATASTORE_ID;
-export const HEXABASE_COMMENTS_PATH = `applications/${HEXABASE_APPLICATION_ID}/datastores/${HEXABASE_COMMENT_DATASTORE_ID}/items/search`;
-export const HEXABASE_CREATE_COMMENT_PATH = `applications/${HEXABASE_APPLICATION_ID}/datastores/${HEXABASE_COMMENT_DATASTORE_ID}/items/new`;
+import { createDatastoreItem, getDatastoreItems } from "./api";
 
 class CommentServiceApi {
   getListComments = async (params: any) => {
-    return api.post(HEXABASE_COMMENTS_PATH, { ...params });
+    return getDatastoreItems({
+      datastoreId: process.env.NEXT_PUBLIC_COMMENT_DATASTORE_ID,
+      payload: params
+    });
   };
   createComment = async (params: any) => {
-    return api.post(HEXABASE_CREATE_COMMENT_PATH, { ...params });
+    return createDatastoreItem({
+      payload: {
+        ...params,
+        projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
+        datastoreId: process.env.NEXT_PUBLIC_COMMENT_DATASTORE_ID
+      }
+    });
   };
 }
 
