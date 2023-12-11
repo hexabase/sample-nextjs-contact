@@ -50,6 +50,8 @@ function InquiryContainer() {
     per_page: pagination.limit,
     use_display_id: true,
     return_number_value: true,
+    sort_field_id: "title",
+    sort_order: "asc",
     conditions: [{ id: "customer_id", search_value: [`${customerId}`] }]
   });
 
@@ -172,11 +174,8 @@ function InquiryContainer() {
         return (
           <Popconfirm
             icon={false}
-            showCancel={false}
             placement="rightTop"
-            okButtonProps={{
-              className: styles.btnCf
-            }}
+            className="z-[999]"
             title={
               <div className="flex flex-col gap-2 pt-2">
                 {currentInquiryStatus?.previousStatus && (
@@ -292,7 +291,7 @@ function InquiryContainer() {
     }
   ];
   return (
-    <>
+    <div className={styles.inquiries_page}>
       <InquiryFilterComponent
         payloadGet={payloadGet}
         setPayloadGet={setPayloadGet}
@@ -312,14 +311,18 @@ function InquiryContainer() {
         tableName="inquiry_page_table"
         onRow={(record: any, rowIndex: any) => {
           return {
-            onClick: (_: any) => {
-              setIsLoading(true);
-              router.push(APP_ROUTES.DetailInquiry(record.id));
+            onClick: (e: any) => {
+              e.preventDefault()
+              const isInsidePopconfirm = e.target.closest('.ant-popover-inner');
+              if (!isInsidePopconfirm) {
+                setIsLoading(true);
+                router.push(APP_ROUTES.DetailInquiry(record.id));
+              }
             }
           };
         }}
       />
-    </>
+    </div>
   );
 }
 

@@ -44,6 +44,8 @@ const TopPageContainer: FC = () => {
     per_page: pagination.limit || 10,
     use_display_id: true,
     return_number_value: true,
+    sort_field_id: "id",
+    sort_order: "asc",
   });
 
   useEffect(() => {
