@@ -11,6 +11,7 @@ interface Props {
   columns: any,
   isLoading: boolean,
   tableName: string,
+  onRow?: any,
 }
 
 const TableComponent = (props: Props) => {
@@ -22,7 +23,8 @@ const TableComponent = (props: Props) => {
     setPagination,
     columns,
     isLoading,
-    tableName
+    tableName,
+    onRow
   } = props;
   useEffect(() => {
     const tempPagination = { ...pagination };
@@ -31,6 +33,13 @@ const TableComponent = (props: Props) => {
   }, [tableData]);
 
   const handleTableChange = (pagination: any, filters: any, sorter: { columnKey: string; order: string; }) => {
+    let newPayloadGet = payloadGet;
+    if (pagination && pagination?.current) {
+      newPayloadGet =  {
+        ...newPayloadGet,
+        page: pagination?.current
+      }
+    }
     // Check if the column has been sorted
     if (sorter && sorter?.columnKey) {
       const sortFieldId = sorter.columnKey !== "date" ? sorter.columnKey : "updated_at";
@@ -40,21 +49,22 @@ const TableComponent = (props: Props) => {
       } else if (sorter.order === "ascend") {
         sortFieldOrder = "asc"
       }
-      setPayloadGet({
-        ...payloadGet,
+      newPayloadGet =  {
+        ...newPayloadGet,
         sort_field_id: sortFieldId,
         sort_order: sortFieldOrder,
-      });
+      }
     }
+    setPayloadGet(newPayloadGet);
   };
 
   const setPage = (page: number) => {
     const tempPagination = { ...pagination };
     tempPagination.page = page;
-    setPayloadGet({
-      ...payloadGet,
-      page: page
-    });
+    // setPayloadGet({
+    //   ...payloadGet,
+    //   page: page
+    // });
     setPagination(tempPagination);
   };
 
@@ -74,6 +84,7 @@ const TableComponent = (props: Props) => {
         setLimit={setLimit}
         tableName={tableName}
         onChange={handleTableChange}
+        onRow={onRow}
         rowKey="key"
       />
     </Spin>

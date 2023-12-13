@@ -16,6 +16,7 @@ const CustomTable: React.FC<{
   setPage?: any;
   setLimit?: any;
   onChange?: any;
+  onRow?: any;
 }> = ({
   columns,
   data,
@@ -27,6 +28,7 @@ const CustomTable: React.FC<{
   setPage,
   setLimit,
   onChange,
+  onRow,
 }) => {
   const [dataSource, setDataSource] = useState<any[]>([]);
 
@@ -57,6 +59,7 @@ const CustomTable: React.FC<{
           },
         }}
         onChange={onChange}
+        onRow={onRow}
         dataSource={dataSource}
       />
     </div>
