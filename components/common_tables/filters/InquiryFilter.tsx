@@ -44,11 +44,11 @@ const InquiryFilterComponent = (props: Props) => {
     keywordSearch: any;
   }) => {
     const conditions = [];
-    conditions.push({
-      id: 'customer_id',
-      search_value: [`${values?.customerId ?? ''}`],
-    });
     if (values?.customerId) {
+      conditions.push({
+        id: 'customer_id',
+        search_value: [`${values?.customerId ?? ''}`],
+      });
       setCustomerId(values?.customerId);
     }
     if (values?.statusDropdown) {

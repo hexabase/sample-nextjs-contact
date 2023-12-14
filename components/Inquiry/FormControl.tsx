@@ -14,6 +14,7 @@ interface Props {
   setShowModalDel?: React.Dispatch<React.SetStateAction<boolean>>;
   handleCancelEdit: any,
   form: any,
+  data: any,
 }
 
 const FormControl = (props: Props) => {
@@ -22,11 +23,12 @@ const FormControl = (props: Props) => {
     setIsEdit,
     handleCancelEdit,
     form,
+    data,
     setShowModalDel
   } = props;
   return (
     <div className="flex items-center justify-between">
-      <div className="text-3xl font-bold -mt-6">タイトル</div>
+      <div className="text-3xl font-bold -mt-6">{data?.Title}</div>
       <div className="flex items-center gap-2">
         {!isEdit && (
           <Button

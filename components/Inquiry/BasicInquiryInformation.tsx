@@ -11,11 +11,10 @@ import { formatTime } from '@/common/libs/functions';
 interface Props {
   data?: any;
   systemDueDate?: any;
-  content?: any;
 }
 
 const BasicInquiryInformation = (props: Props) => {
-  const { data, systemDueDate, content } = props;
+  const { data, systemDueDate } = props;
   return (
     <>
       <div className="mt-5 flex gap-4">
@@ -39,7 +38,7 @@ const BasicInquiryInformation = (props: Props) => {
         </div>
       </div>
 
-      <div className="mt-6 p-4">{content?.value}</div>
+      <div className="mt-6 p-4" dangerouslySetInnerHTML={{ __html: data?.content.replace(/\n/g, '<br>') }} />
     </>
   );
 };
