@@ -70,7 +70,7 @@ hx projects:restore inquiry_template.zip
 ## Create .env according to the created environment
 
 ```shell
-cp .env.sample .env.local
+cp .env.example .env.local
 ```
 
 ### Example
