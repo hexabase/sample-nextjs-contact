@@ -52,7 +52,7 @@ export const LIST_INQUIRIES_NAME_SPACES = {
   },
   TABLE_IMPORTANCE: {
     title: "重要度",
-    dataIndex: "importance"
+    dataIndex: "important"
   },
   TABLE_URGENCY: {
     title: "緊急度",
