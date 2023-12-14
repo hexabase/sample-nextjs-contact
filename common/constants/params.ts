@@ -65,45 +65,45 @@ export const inquiryStatus = [
 
 export const inquiryImportance = [
   {
-    label: "high",
+    label: "高",
     value: "0ccf7cba-a38d-4f5a-92c5-bba1a5f56b8d"
   },
   {
-    label: "medium",
+    label: "中",
     value: "559c5ef3-ea35-4d3d-b250-fdc5737e66ab"
   },
   {
-    label: "low",
+    label: "低",
     value: "16c2e64d-693d-49eb-b808-884167473a3a"
   },
 ];
 
 export const inquiryUrgency = [
   {
-    label: "high",
+    label: "高",
     value: "8b6f203c-0bad-4887-8a11-8d2c5cb98925"
   },
   {
-    label: "medium",
+    label: "中",
     value: "162039d3-37e4-47c7-be85-1fadcf837521"
   },
   {
-    label: "low",
+    label: "低",
     value: "efedb39c-0924-45ec-9496-0cd7abcf0db4"
   },
 ];
 
 export const inquiryPriority = [
   {
-    label: "high",
+    label: "高",
     value: "57c22be8-b3b7-41f3-9a59-369fdb67e8ae"
   },
   {
-    label: "medium",
+    label: "中",
     value: "52e70013-5193-4f1d-951d-ef726e7a0578"
   },
   {
-    label: "low",
+    label: "低",
     value: "8fe047b2-ae98-4371-a57c-1519c2ea6671"
   },
 ];

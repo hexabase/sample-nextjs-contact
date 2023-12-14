@@ -7,7 +7,7 @@ import {
   detailInquiryPayloadDataType,
   TFieldValueConvert,
   UpdateItemParameters,
-} from '../../../common/libs/types';
+} from '@/common/libs/types';
 import { inquiryServiceApi } from '@/services/inquiry-service';
 import optionStatus from '@/common/constants/params';
 import { Form, Spin } from 'antd';
@@ -132,19 +132,19 @@ function DetailInquiry({ id }: { id: string }) {
         handleCancelEdit={handleCancelEdit}
         form={form}
         setShowModalDel={setShowModalDel}
+        data={data}
       />
 
       <Spin spinning={isLoading}>
         <BasicInquiryInformation
           data={data}
           systemDueDate={systemDueDate}
-          content={content}
         />
 
         <InquiryFormData isEdit={isEdit} form={form} onFinish={onFinish} />
       </Spin>
 
-      <CommentComponent inquiryId={id} pic={pic?.value} />
+      <CommentComponent inquiryId={id} pic={pic} />
       <ModalDelete
         setShowModalDel={setShowModalDel}
         showModalDel={showModalDel}
