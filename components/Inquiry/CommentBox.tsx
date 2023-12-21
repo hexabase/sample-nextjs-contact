@@ -8,7 +8,6 @@ import { DETAIL_INQUIRY_NAME_SPACES } from '@/common/constants/namespaces';
 import { GetItemsParameters } from '@hexabase/hexabase-js/src/lib/types/item/input';
 import { CreateItemParameters } from '@/common/libs/types';
 import { formatTime } from '@/common/libs/functions';
-import item from '@hexabase/hexabase-js/dist/lib/packages/item';
 
 interface Props {
   inquiryId?: any;
@@ -69,7 +68,7 @@ function CommentComponent(props: Props) {
             {tableData?.items.map((item: any, i: number) => (
               <div className="my-3" key={i}>
                 <div className="flex items-center gap-5 mb-2">
-                  <span className="text-lg font-bold">{pic}</span>
+                  {pic && <span className="text-lg font-bold">{pic}</span>}
                   <span className="text-sm">
                     {formatTime(item?.createdAt, NON_SECOND_DATETIME_FORMAT)}
                   </span>

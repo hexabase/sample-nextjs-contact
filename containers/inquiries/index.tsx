@@ -52,7 +52,7 @@ function InquiryContainer() {
     return_number_value: true,
     sort_field_id: "title",
     sort_order: "asc",
-    conditions: [{ id: "customer_id", search_value: [`${customerId}`] }]
+    conditions: customerId ? [{ id: "customer_id", search_value: [`${customerId}`] }] : []
   });
 
   useEffect(() => {
@@ -252,9 +252,7 @@ function InquiryContainer() {
       render: (_, record: any) => {
         return (
           <div>
-            {record?.updatedAt
-              ? formatTime(record?.updatedAt, SPLASH_REVERSED_DATE_FORMAT)
-              : formatTime(record?.createdAt, SPLASH_REVERSED_DATE_FORMAT)}
+            {formatTime(record?.fields?.system_due_date, SPLASH_REVERSED_DATE_FORMAT)}
           </div>
         );
       }
