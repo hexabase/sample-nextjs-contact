@@ -1,12 +1,13 @@
 import { COOKIES_KEY } from "@/common/constants/cookie";
 import Cookies from "js-cookie";
-import { HexabaseClient, Item } from "@hexabase/hexabase-js";
+import { HexabaseClient } from "@hexabase/hexabase-js";
 import {
   CREATE_NEW_ITEM,
   DATASTORE_UPDATE_ITEM,
   DELETE_ITEM,
   ITEM_DETAIL
 } from "@hexabase/hexabase-js/src/lib/graphql/item";
+import { APP_ROUTES } from "@/common/constants/routes";
 
 interface dataStoreProps {
   workspaceId?: string;
@@ -22,6 +23,16 @@ if (token) {
   api.setToken(token).then();
 }
 
+const logout = () => {
+  Cookies.remove(COOKIES_KEY.ACCESS_TOKEN);
+  Cookies.remove(COOKIES_KEY.ACCESS_TOKEN);
+  Cookies.remove(COOKIES_KEY.USERNAME);
+  Cookies.remove(COOKIES_KEY.EMAIL);
+  Cookies.remove(COOKIES_KEY.USER_ID);
+  Cookies.remove(COOKIES_KEY.PROFILE_PICTURE);
+  window.location.href = APP_ROUTES.LOGIN;
+}
+
 const initializeDatastore = async (props: dataStoreProps) => {
   const {
     workspaceId = process.env.NEXT_PUBLIC_WORKSPACE_ID,
@@ -33,10 +44,14 @@ const initializeDatastore = async (props: dataStoreProps) => {
   return project.datastore(datastoreId);
 };
 
-const getDatastoreItems = async (props: dataStoreProps): Promise<{ items: Item[]; totalCount: number }> => {
+const getDatastoreItems = async (props: dataStoreProps) => {
   const { payload } = props;
-  const datastore = await initializeDatastore(props);
-  return datastore.itemsWithCount(payload);
+  const datastore = await initializeDatastore(props).catch(err => {
+    if (err?.response?.errors?.[0]?.message === "TOKEN_INVALID") {
+      logout();
+    }
+  });
+  return datastore?.itemsWithCount(payload);
 };
 
 const getDatastoreItem = async (props: dataStoreProps) => {
@@ -84,6 +99,7 @@ const deleteDatastoreItem = async (props: dataStoreProps) => {
 
 export {
   api,
+  logout,
   getDatastoreItems,
   createDatastoreItem,
   updateDatastoreItem,
