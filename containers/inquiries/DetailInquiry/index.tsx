@@ -2,7 +2,7 @@ import { useTopBarStore } from '@/hooks/useTopBar';
 import React, { useEffect, useState } from 'react';
 import ModalDelete from '@/components/ModalDelete';
 import CommentComponent from '@/components/Inquiry/CommentBox';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from "next/navigation";
 import {
   detailInquiryPayloadDataType,
   TFieldValueConvert,
@@ -122,7 +122,8 @@ function DetailInquiry({ id }: { id: string }) {
 
   const handleCancelEdit = () => {
     setIsEdit(false);
-    setIsFetching(!isFetching);
+    setIsLoading(true);
+    router.push(APP_ROUTES.HOME);
   };
   return (
     <>
