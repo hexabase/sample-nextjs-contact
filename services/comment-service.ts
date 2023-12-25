@@ -1,4 +1,4 @@
-import { createDatastoreItem, getDatastoreItems } from "./api";
+import { createDatastoreItemHistories, getDatastoreItems } from "./api";
 
 class CommentServiceApi {
   getListComments = async (params: any) => {
@@ -8,12 +8,9 @@ class CommentServiceApi {
     });
   };
   createComment = async (params: any) => {
-    return createDatastoreItem({
-      payload: {
-        ...params,
-        projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
-        datastoreId: process.env.NEXT_PUBLIC_COMMENT_DATASTORE_ID
-      }
+    return createDatastoreItemHistories({
+      datastoreId: process.env.NEXT_PUBLIC_INQUIRY_DATASTORE_ID,
+      payload: params
     });
   };
 }

@@ -5,9 +5,13 @@ import {
   CREATE_NEW_ITEM,
   DATASTORE_UPDATE_ITEM,
   DELETE_ITEM,
-  ITEM_DETAIL
+  ITEM_DETAIL, ITEM_HISTORIES, POST_NEW_ITEM_HISTORY
 } from "@hexabase/hexabase-js/src/lib/graphql/item";
 import { APP_ROUTES } from "@/common/constants/routes";
+import {
+  DtDatastoreCreateCommentItem,
+  DtItemHistories
+} from "@hexabase/hexabase-js/src/lib/types/item";
 
 interface dataStoreProps {
   workspaceId?: string;
@@ -15,6 +19,7 @@ interface dataStoreProps {
   datastoreId?: string | undefined;
   payload?: any;
   itemId?: any;
+  unread?: boolean;
 }
 
 const api = new HexabaseClient();
@@ -31,7 +36,7 @@ const logout = () => {
   Cookies.remove(COOKIES_KEY.USER_ID);
   Cookies.remove(COOKIES_KEY.PROFILE_PICTURE);
   window.location.href = APP_ROUTES.LOGIN;
-}
+};
 
 const initializeDatastore = async (props: dataStoreProps) => {
   const {
@@ -74,6 +79,39 @@ const getDatastoreItem = async (props: dataStoreProps) => {
   return datastore.request(ITEM_DETAIL, params);
 };
 
+const getDatastoreItemHistories = async (props: dataStoreProps) => {
+  const { itemId, payload } = props;
+  const datastore = await initializeDatastore(props);
+  const params = {
+    projectId: datastore.project.id,
+    datastoreId: datastore.id,
+    itemId: itemId,
+    payload
+  };
+  const res: DtItemHistories = await datastore.request(ITEM_HISTORIES, params);
+  const histories = res.getHistories.histories;
+  return {
+    unread: res.getHistories.unread,
+    histories
+  };
+};
+
+const createDatastoreItemHistories = async (props: dataStoreProps) => {
+  const { payload, unread = true } = props;
+  const datastore = await initializeDatastore(props);
+  payload.post_mode = ""
+  payload.workspace_id = process.env.NEXT_PUBLIC_WORKSPACE_ID
+  payload.project_id = datastore.project.id
+  payload.datastore_id = datastore.id
+
+  if (unread) {
+    payload.is_send_item_unread = true;
+  }
+  // handle call graphql
+  const res: DtDatastoreCreateCommentItem = await datastore.request(POST_NEW_ITEM_HISTORY, { payload });
+  return res;
+};
+
 const createDatastoreItem = async (props: dataStoreProps) => {
   const { payload } = props;
   const datastore = await initializeDatastore(props);
@@ -104,5 +142,7 @@ export {
   createDatastoreItem,
   updateDatastoreItem,
   deleteDatastoreItem,
-  getDatastoreItem
+  getDatastoreItem,
+  getDatastoreItemHistories,
+  createDatastoreItemHistories
 };
