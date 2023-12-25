@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@hexabase/hexabase-js": "2.0.5",
+    "@hexabase/hexabase-js": "2.0.10",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^3.1.0",
     "@react-spring/web": "^9.7.3",
