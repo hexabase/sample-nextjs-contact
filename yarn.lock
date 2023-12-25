@@ -122,10 +122,10 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.36.0.tgz#9837f768c03a1e4a30bd304a64fb8844f0e72efe"
   integrity sha512-lxJ9R5ygVm8ZWgYdUweoq5ownDlJ4upvoWmO4eLxBYHdMo+vZ/Rx0EN6MbKWDJOSUGrqJy2Gt+Dyv/VKml0fjg==
 
-"@hexabase/hexabase-js@2.0.5":
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/@hexabase/hexabase-js/-/hexabase-js-2.0.5.tgz#261586f2c95e895215ca59c7205d6769834c21dc"
-  integrity sha512-leNF2xiJxxrbeogwF/40pdeyWXy32fWr96uB8f97ag3yCnhLn1XgwHLcfJNNTkuMITnzKUOSxklEf/NGwYpdJA==
+"@hexabase/hexabase-js@2.0.10":
+  version "2.0.10"
+  resolved "https://registry.yarnpkg.com/@hexabase/hexabase-js/-/hexabase-js-2.0.10.tgz#068f3f897d2713d9f3670cdf4c4b680c5483af2b"
+  integrity sha512-UG3TPxLQ1lfTlVgaLQIBj4LhLYz5uGEQTuMkb9b0Ild/IUSVTl/1P/fvn7iX3lvKpo9rC/sa5hppPToAxs+8Gg==
   dependencies:
     "@microsoft/signalr" "^7.0.12"
     "@typescript-eslint/eslint-plugin-tslint" "^6.9.0"

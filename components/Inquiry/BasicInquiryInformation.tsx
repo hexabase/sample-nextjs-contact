@@ -15,9 +15,10 @@ interface Props {
 
 const BasicInquiryInformation = (props: Props) => {
   const { data, systemDueDate } = props;
+  const content = data?.field_values?.content?.value;
   return (
     <>
-      <div className="mt-5 flex gap-4">
+      <div className="my-5 flex gap-4">
         <Image src={avatarDefault} alt="avatar" width={56} height={56} />
         <div className="flex flex-col">
           <span className="font-bold text-lg">{data?.created_by}</span>
@@ -38,7 +39,7 @@ const BasicInquiryInformation = (props: Props) => {
         </div>
       </div>
 
-      <div className="mt-6 p-4" dangerouslySetInnerHTML={{ __html: data?.content.replace(/\n/g, '<br>') }} />
+      {content && <div className="mt-6 p-4" dangerouslySetInnerHTML={{ __html: content.replace(/\n/g, '<br>') }} />}
     </>
   );
 };

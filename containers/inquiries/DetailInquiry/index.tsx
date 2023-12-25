@@ -2,7 +2,7 @@ import { useTopBarStore } from '@/hooks/useTopBar';
 import React, { useEffect, useState } from 'react';
 import ModalDelete from '@/components/ModalDelete';
 import CommentComponent from '@/components/Inquiry/CommentBox';
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   detailInquiryPayloadDataType,
   TFieldValueConvert,
@@ -50,7 +50,7 @@ function DetailInquiry({ id }: { id: string }) {
     Object.keys(dataFields).map((k) => {
       dataConvert[dataFields[k].field_id] = dataFields[k].value;
     });
-    setData(dataConvert);
+    setData(requestData?.getDatastoreItemDetails);
     setRevNo(requestData?.getDatastoreItemDetails?.rev_no);
 
     setSystemDueDate(dataConvert?.system_due_date);
