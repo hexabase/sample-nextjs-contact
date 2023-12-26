@@ -1,23 +1,20 @@
-import { useTopBarStore } from '@/hooks/useTopBar';
-import React, { useEffect, useState } from 'react';
-import ModalDelete from '@/components/ModalDelete';
-import CommentComponent from '@/components/Inquiry/CommentBox';
+import { useTopBarStore } from "@/hooks/useTopBar";
+import React, { useEffect, useState } from "react";
+import ModalDelete from "@/components/ModalDelete";
+import CommentComponent from "@/components/Inquiry/CommentBox";
 import { useRouter } from "next/navigation";
-import {
-  detailInquiryPayloadDataType,
-  TFieldValueConvert,
-  UpdateItemParameters,
-} from '@/common/libs/types';
-import { inquiryServiceApi } from '@/services/inquiry-service';
-import optionStatus from '@/common/constants/params';
-import { Form, Spin } from 'antd';
-import { toast } from 'react-toastify';
-import { APP_ROUTES } from '@/common/constants/routes';
-import FormControl from '@/components/Inquiry/FormControl';
-import BasicInquiryInformation from '@/components/Inquiry/BasicInquiryInformation';
-import InquiryFormData from '@/components/Inquiry/InquiryFormData';
-import { DtItemDetail } from '@hexabase/hexabase-js/src/lib/types/item/response';
-import dayjs from 'dayjs';
+import { detailInquiryPayloadDataType, TFieldValueConvert, UpdateItemParameters } from "@/common/libs/types";
+import { inquiryServiceApi } from "@/services/inquiry-service";
+import optionStatus from "@/common/constants/params";
+import { Form, Spin } from "antd";
+import { toast } from "react-toastify";
+import { APP_ROUTES } from "@/common/constants/routes";
+import FormControl from "@/components/Inquiry/FormControl";
+import BasicInquiryInformation from "@/components/Inquiry/BasicInquiryInformation";
+import InquiryFormData from "@/components/Inquiry/InquiryFormData";
+import { DtItemDetail } from "@hexabase/hexabase-js/src/lib/types/item/response";
+import dayjs from "dayjs";
+import { useCustomerIdStore } from "@/hooks/useCustomerId";
 
 function DetailInquiry({ id }: { id: string }) {
   const [form] = Form.useForm();
@@ -25,16 +22,16 @@ function DetailInquiry({ id }: { id: string }) {
   useEffect(() => setTitle(null), []);
   const router = useRouter();
   const { getInquiry, updateInquiry } = inquiryServiceApi;
+  const { setGlobalCustomerId } = useCustomerIdStore();
   const [payloadGet, setPayloadGet] = useState<detailInquiryPayloadDataType>({
-    format: 'map',
+    format: "map",
     include_linked_items: true,
-    include_lookups: true,
+    include_lookups: true
   });
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [data, setData] = useState<any>();
   const [systemDueDate, setSystemDueDate] = useState<any>();
-  const [content, setContent] = useState<any>();
   const [taskDueDate, setTaskDueDate] = useState<any>();
   const [pic, setPic] = useState<any>();
   const [important, setImportant] = useState<any>();
@@ -52,9 +49,11 @@ function DetailInquiry({ id }: { id: string }) {
     });
     setData(requestData?.getDatastoreItemDetails);
     setRevNo(requestData?.getDatastoreItemDetails?.rev_no);
-
+    const customerId = dataConvert?.customer_id?.item_id;
+    if (customerId !== null && customerId !== "" && customerId !== undefined) {
+      setGlobalCustomerId(customerId);
+    }
     setSystemDueDate(dataConvert?.system_due_date);
-    setContent(dataConvert?.content);
     setTaskDueDate(dataConvert?.task_due_date);
     setPic(dataConvert?.pic);
     setImportant(dataConvert?.important);
@@ -69,10 +68,10 @@ function DetailInquiry({ id }: { id: string }) {
       .then((r) => extractData(r))
       .catch((err) => {
         toast.error(
-          err?.data?.errors[0]?.description || 'Something went wrong',
+          err?.data?.errors[0]?.description || "Something went wrong",
           {
             position: toast.POSITION.TOP_CENTER,
-            autoClose: 1000,
+            autoClose: 1000
           }
         );
         router.push(APP_ROUTES.LIST_INQUIRY);
@@ -93,7 +92,7 @@ function DetailInquiry({ id }: { id: string }) {
       status: status,
       important: important,
       urgency: urgency,
-      priority: priority,
+      priority: priority
     });
   }, [extractData]);
 
@@ -108,23 +107,23 @@ function DetailInquiry({ id }: { id: string }) {
           important: values?.important,
           urgency: values?.urgency,
           priority: values?.priority,
-          task_due_date: values?.task_due_date,
+          task_due_date: values?.task_due_date
         },
-        rev_no: revNo,
+        rev_no: revNo
       },
-      itemId: id,
+      itemId: id
     };
     updateInquiry(payload).then((r) => {
       setIsEdit(false);
       setIsLoading(true);
-      router.push(APP_ROUTES.HOME);
+      router.push(APP_ROUTES.LIST_INQUIRY);
     });
   };
 
   const handleCancelEdit = () => {
     setIsEdit(false);
     setIsLoading(true);
-    router.push(APP_ROUTES.HOME);
+    router.push(APP_ROUTES.LIST_INQUIRY);
   };
   return (
     <>
