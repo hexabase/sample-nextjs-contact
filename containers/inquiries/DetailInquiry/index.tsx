@@ -116,7 +116,8 @@ function DetailInquiry({ id }: { id: string }) {
     };
     updateInquiry(payload).then((r) => {
       setIsEdit(false);
-      setIsFetching(!isFetching);
+      setIsLoading(true);
+      router.push(APP_ROUTES.HOME);
     });
   };
 
@@ -145,7 +146,9 @@ function DetailInquiry({ id }: { id: string }) {
         <InquiryFormData isEdit={isEdit} form={form} onFinish={onFinish} />
       </Spin>
 
-      <CommentComponent inquiryId={id} pic={pic} />
+      <CommentComponent
+        inquiryId={id}
+      />
       <ModalDelete
         setShowModalDel={setShowModalDel}
         showModalDel={showModalDel}
