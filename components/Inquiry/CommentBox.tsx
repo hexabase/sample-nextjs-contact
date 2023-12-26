@@ -11,14 +11,15 @@ import { inquiryServiceApi } from "@/services/inquiry-service";
 
 interface Props {
   inquiryId?: any;
-  pic?: any;
 }
 
 function CommentComponent(props: Props) {
-  const { inquiryId, pic } = props;
+  const {
+    inquiryId,
+  } = props;
   const {
     // getListComments,
-    createComment
+    createComment,
   } = commentServiceApi;
   const { getInquiryHistories } = inquiryServiceApi;
   const [valueInput, setValueInput] = useState<string | undefined>("");
@@ -55,6 +56,8 @@ function CommentComponent(props: Props) {
   // }, [payloadGet, isFetching]);
   const handleSendComment = () => {
     if (valueInput) {
+      setIsLoading(true);
+      setIsFetching(false);
       const payload = {
         item_id: inquiryId,
         comment: valueInput
@@ -72,7 +75,7 @@ function CommentComponent(props: Props) {
       </div>
       <Spin spinning={isLoading}>
         {tableData && (
-          <div>
+          <div className="comment_box max-h-[30vh] overflow-y-scroll">
             {tableData.map((item: any, i: number) => (
                 <>
                   {item?.comment && (
