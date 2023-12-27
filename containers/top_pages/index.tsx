@@ -78,29 +78,29 @@ const TopPageContainer: FC = () => {
       showSorterTooltip: false,
       sorter: true,
       ellipsis: true,
-      width: '60%',
+      width: '85%',
       render: (text, record) => (
         <Tooltip title={text}>
           <span className="text-left">{record?.fields?.company_name}</span>
         </Tooltip>
       ),
     },
-    {
-      title: TOP_PAGE_NAME_SPACES.UPDATED_AT.title,
-      dataIndex: TOP_PAGE_NAME_SPACES.UPDATED_AT.dataIndex,
-      key: TOP_PAGE_NAME_SPACES.UPDATED_AT.dataIndex,
-      showSorterTooltip: false,
-      sorter: true,
-      ellipsis: true,
-      width: '25%',
-      render: (_, record) => (
-        <span className="flex justify-center w-full">
-          {record?.updatedAt
-            ? formatTime(record?.updatedAt, SPLASH_REVERSED_DATE_FORMAT)
-            : formatTime(record?.createdAt, SPLASH_REVERSED_DATE_FORMAT)}
-        </span>
-      ),
-    },
+    // {
+    //   title: TOP_PAGE_NAME_SPACES.UPDATED_AT.title,
+    //   dataIndex: TOP_PAGE_NAME_SPACES.UPDATED_AT.dataIndex,
+    //   key: TOP_PAGE_NAME_SPACES.UPDATED_AT.dataIndex,
+    //   showSorterTooltip: false,
+    //   sorter: true,
+    //   ellipsis: true,
+    //   width: '25%',
+    //   render: (_, record) => (
+    //     <span className="flex justify-center w-full">
+    //       {record?.updatedAt
+    //         ? formatTime(record?.updatedAt, SPLASH_REVERSED_DATE_FORMAT)
+    //         : formatTime(record?.createdAt, SPLASH_REVERSED_DATE_FORMAT)}
+    //     </span>
+    //   ),
+    // },
   ];
 
   const onClickRow = (record: HomePageDataType) => {

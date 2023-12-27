@@ -2,11 +2,12 @@ import { detailInquiryPayloadDataType } from "@/common/libs/types";
 import {
   createDatastoreItem,
   deleteDatastoreItem,
-  getDatastoreItem,
+  getDatastoreItem, getDatastoreItemHistories,
   getDatastoreItems,
   updateDatastoreItem
 } from "./api";
 import { GetItemsParameters } from "@hexabase/hexabase-js/src/lib/types/item/input";
+import { GetHistoryPl } from "@hexabase/hexabase-js/src/lib/types/item";
 
 class InquiryServiceApi {
   getListInquiry = async (params: GetItemsParameters) => {
@@ -48,6 +49,14 @@ class InquiryServiceApi {
         datastoreId: process.env.NEXT_PUBLIC_INQUIRY_DATASTORE_ID,
         itemId: itemId,
       }
+    })
+  };
+  getInquiryHistories = async (itemId: any, getHistoryParamQueries?: GetHistoryPl) => {
+    return getDatastoreItemHistories({
+      datastoreId: process.env.NEXT_PUBLIC_INQUIRY_DATASTORE_ID,
+      projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
+      itemId: itemId,
+      payload: getHistoryParamQueries
     })
   };
 }

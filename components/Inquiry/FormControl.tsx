@@ -28,7 +28,7 @@ const FormControl = (props: Props) => {
   } = props;
   return (
     <div className="flex items-center justify-between">
-      <div className="text-3xl font-bold -mt-6">{data?.Title}</div>
+      <div className="text-3xl font-bold -mt-6">{data?.title}</div>
       <div className="flex items-center gap-2">
         {!isEdit && (
           <Button
