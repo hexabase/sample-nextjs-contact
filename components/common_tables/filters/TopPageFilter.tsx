@@ -23,13 +23,13 @@ const TopPageFilterComponent = (props: Props) => {
         { "id": "company_name", "search_value": [`${values?.customerName}`] }
       );
     }
-    if (values?.searchDate) {
-      const startOfDay = values?.searchDate.startOf("day").toISOString();
-      const endOfDay = values?.searchDate.endOf("day").toISOString();
-      conditions.push(
-        { "id": "updated_at", "search_value": [`${startOfDay}`, `${endOfDay}`] }
-      );
-    }
+    // if (values?.searchDate) {
+    //   const startOfDay = values?.searchDate.startOf("day").toISOString();
+    //   const endOfDay = values?.searchDate.endOf("day").toISOString();
+    //   conditions.push(
+    //     { "id": "updated_at", "search_value": [`${startOfDay}`, `${endOfDay}`] }
+    //   );
+    // }
     setPayloadGet({
       ...payloadGet,
       conditions: conditions,
@@ -50,16 +50,16 @@ const TopPageFilterComponent = (props: Props) => {
           placeholder={TOP_PAGE_NAME_SPACES.COMPANY_NAME_FILTER}
         />
       </Form.Item>
-      <Form.Item
-        className="w-1/5 mb-0"
-        name="searchDate"
-      >
-        <DatePicker
-          allowClear
-          className="w-full"
-          placeholder={TOP_PAGE_NAME_SPACES.UPDATED_AT_FILTER}
-        />
-      </Form.Item>
+      {/*<Form.Item*/}
+      {/*  className="w-1/5 mb-0"*/}
+      {/*  name="searchDate"*/}
+      {/*>*/}
+      {/*  <DatePicker*/}
+      {/*    allowClear*/}
+      {/*    className="w-full"*/}
+      {/*    placeholder={TOP_PAGE_NAME_SPACES.UPDATED_AT_FILTER}*/}
+      {/*  />*/}
+      {/*</Form.Item>*/}
 
       <button className={cx(styles.submit_filter, "flex gap-1 items-center")}>
         <AiOutlineSearch />
