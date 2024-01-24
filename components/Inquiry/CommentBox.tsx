@@ -15,11 +15,11 @@ interface Props {
 
 function CommentComponent(props: Props) {
   const {
-    inquiryId,
+    inquiryId
   } = props;
   const {
     // getListComments,
-    createComment,
+    createComment
   } = commentServiceApi;
   const { getInquiryHistories } = inquiryServiceApi;
   const [valueInput, setValueInput] = useState<string | undefined>("");
@@ -40,7 +40,10 @@ function CommentComponent(props: Props) {
     getInquiryHistories(inquiryId, {
       exclude_action_history: true
     }).then((r) => {
-      setTableData(r?.histories);
+      const sortedHistories = [...r?.histories].sort(
+        (a, b) => b.display_order - a.display_order
+      );
+      setTableData(sortedHistories);
       setIsLoading(false);
     });
   }, [payloadGet, isFetching]);
